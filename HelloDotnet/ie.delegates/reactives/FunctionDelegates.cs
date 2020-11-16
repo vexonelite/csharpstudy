@@ -26,8 +26,8 @@ namespace ie.delegates.reactives
 
     public abstract class IeBaseConverter<T, R>: IMapFunction<T, R> {
         
-        //public R convertIntoData(T input) {
-        R IMapFunction<T,R>.convertIntoData(T input) {        
+        public R convertIntoData(T input) {
+        //R IMapFunction<T,R>.convertIntoData(T input) {        
             try {
                 return doConversion(input);
             }

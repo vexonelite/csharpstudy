@@ -5,13 +5,14 @@ using ie.delegates.reactives;
 namespace ie.developments
 {
     public class TestRepository: IRunnable {
-        private readonly Func<int, int> callback;
+        private readonly Action<int> callback;
 
-        public TestRepository(Func<int, int> callback) {
+        public TestRepository(Action<int> callback) {
             this.callback = callback;
         }
 
-        void IRunnable.run() {
+        public void run() {
+        //void IRunnable.run() {
             int[] intArray = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
             for(int i = 0; i < intArray.Length; i++) {
                 int item = intArray[i];

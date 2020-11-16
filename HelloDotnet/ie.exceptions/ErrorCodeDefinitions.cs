@@ -3,7 +3,6 @@ using System;
 namespace ie.errorcodes 
 {
     public class Base {
-        public const string INTERNAL_CONVERSION_ERROR = "99999";
         public const string ILLEGAL_ARGUMENT_ERROR = "99998";
         public const string FAIL_TO_WRITE_TO_FILE = "99997";
         public const string FAIL_TO_READ_FROM_FILE = "99996";
@@ -27,6 +26,10 @@ namespace ie.errorcodes
         public const string THREAD_INTERRUPTED = "99948";
         public const string NULL_POINTER_ERROR = "99947";
         public const string DEFAULT_UNIT_TEST_ERROR = "99946";
+        public const string INTERNAL_GENERATION_ERROR = "99945";
+        public const string INTERNAL_CONVERSION_ERROR = "99944";
+        public const string INTERNAL_FILTERING_ERROR = "99943";
+        public const string INTERNAL_PROCESS_ERROR = "99942";
     }
     
     public class Ping {

@@ -4,6 +4,10 @@ using ie.errorcodes;
 
 namespace ie.delegates.reactives 
 {
+    public interface IRunnable {
+        void run();
+    }
+
     public interface ICallable<out R> {
         R call();
     }
@@ -41,4 +45,6 @@ namespace ie.delegates.reactives
         
         protected abstract R doConversion(T input);
     }
+
+    
 }

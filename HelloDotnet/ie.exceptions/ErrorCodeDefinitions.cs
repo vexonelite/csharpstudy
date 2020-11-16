@@ -1,10 +1,7 @@
 using System;
 
-/**
- * Exception 使用到的 Code
- */
-namespace ie.errorcodes {
-
+namespace ie.errorcodes 
+{
     public class Base {
         public const string INTERNAL_CONVERSION_ERROR = "99999";
         public const string ILLEGAL_ARGUMENT_ERROR = "99998";

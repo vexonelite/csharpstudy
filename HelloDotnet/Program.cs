@@ -2,6 +2,7 @@
 using ie.delegates;
 using ie.delegates.reactives;
 using ie.structures;
+using ie.developments;
 
 // namespace HelloDotnet
 // {
@@ -58,6 +59,20 @@ namespace RectangleApplication {
          return input.Length;
       }
    }
+
+   public delegate void MyDelegate(string msg); // declare a delegate within a namespace?
+
+   class ClassFooA {
+      public static void MethodA(string message) {
+         Console.WriteLine("Called ClassA.MethodA() with parameter: " + message);
+      }
+   }
+
+   class ClassFooB {
+      public static void MethodB(string message) {
+         Console.WriteLine("Called ClassB.MethodB() with parameter: " + message);
+      }
+   }
    
    class ExecuteRectangle {
       static void Main(string[] args) {
@@ -73,6 +88,22 @@ namespace RectangleApplication {
 
          FooDelegate fooDelegate = new FooImpl(1, "Foo_2020_11_13", "I know how to do");
          Console.WriteLine("CellType: {0}, Identifier: {1}, Description: {2}", fooDelegate.theCellType, fooDelegate.theIdentifier, fooDelegate.theDescription);
+
+         MyDelegate del1 = new MyDelegate(ClassFooA.MethodA);
+         del1.Invoke("I can help1");
+         // or 
+         MyDelegate del2 = ClassFooB.MethodB; 
+         del2("I can help2");
+
+         // or set lambda expression 
+         MyDelegate del3 = (string msg) => Console.WriteLine(msg);
+         del3("I can help3");
+
+         // Func<int, int> callback = (int input, int output) => {}
+         // TestRepository repository = new TestRepository()
+
       }
    }
+
+   
 }

@@ -213,6 +213,21 @@ namespace RectangleApplication {
          TestRepository repository1 = new TestRepository(callback1);
          repository1.run();
 
+         ActionDelegateTest<string> actionDelegateTest = new ActionDelegateTest<string>();
+         Action noParamAction = () => { Console.WriteLine("noParamAction"); };
+         actionDelegateTest.testAction1(noParamAction);
+         Action<string> stringAction = (string input) => { Console.WriteLine("stringAction: {0}", input); };
+         actionDelegateTest.testAction2(stringAction, "What the Fuck");
+
+
+         FuncDelegateTest<string, int> funcDelegateTest = new FuncDelegateTest<string, int>();
+         Func<int> noParamFunc = () => { return 100; };
+         int funcResult1 = funcDelegateTest.testFunc1(noParamFunc);
+         Console.WriteLine("funcResult1: {0}", funcResult1);
+
+         Func<string, int> stringFunc = (string item) => { return item.Length; };
+         int funcResult2 = funcDelegateTest.testFunc2(stringFunc, "I enjoy running!");
+         Console.WriteLine("funcResult2: {0}", funcResult2);
          //==============================
 
          TestStringToInt stringToIntConverter = new TestStringToInt();

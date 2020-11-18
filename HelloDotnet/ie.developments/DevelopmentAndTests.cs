@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;   // need for List<T>
 using System.Diagnostics;           // need for Stopwatch
+using System.Threading;             // need for CancellationTokenSource
 using System.Threading.Tasks;       // need for Parallel.For() Method
 using System.Linq;                  // need for usage of Enumerable.Sum() Method, e.g., List<int>.Sum()
 using ie.delegates.reactives;
@@ -102,5 +103,72 @@ namespace ie.developments
             Console.WriteLine("Total prime numbers: {0}\nProcess time: {1}", result, sw.ElapsedMilliseconds);
         }
     }
+    
+    public class TestTaskCancellation {
+
+        public async Task runTask() {
+            var tokenSource2 = new CancellationTokenSource();
+            CancellationToken ct = tokenSource2.Token;
+
+            var task = Task.Run(() =>
+                    {
+                        // Were we already canceled?
+                        ct.ThrowIfCancellationRequested();
+
+                        bool moreToDo = true;
+                        while (moreToDo)
+                        {
+                            // Poll on this property if you have to do
+                            // other cleanup before throwing.
+                            if (ct.IsCancellationRequested)
+                            {
+                                // Clean up here, then...
+                                ct.ThrowIfCancellationRequested();
+                            }
+                        }
+                    }, tokenSource2.Token); // Pass same token to Task.Run.
+
+                    tokenSource2.Cancel();
+
+                    // Just continue on this thread, or await with try-catch:
+                    try
+                    {
+                        await task;
+                    }
+                    catch (OperationCanceledException e)
+                    {
+                        Console.WriteLine($"{nameof(OperationCanceledException)} thrown with message: {e.Message}");
+                    }
+                    finally
+                    {
+                        tokenSource2.Dispose();
+                    }
+
+                    Console.ReadKey();
+        }
         
+        
+    }
+
+    public class ActionDelegateTest<T> {
+        
+        public void testAction1(Action action) {
+            action.Invoke();
+        }
+
+        public void testAction2(Action<T> action, T item) {
+            action.Invoke(item);
+        }
+    }
+
+    public class FuncDelegateTest<T, R> {
+        
+        public R testFunc1(Func<R> function) {
+            return function.Invoke();
+        }
+
+        public R testFunc2(Func<T, R> function, T item) {
+            return function.Invoke(item);
+        }
+    }
 }

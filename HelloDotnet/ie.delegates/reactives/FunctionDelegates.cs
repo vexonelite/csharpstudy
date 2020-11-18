@@ -51,25 +51,25 @@ namespace ie.delegates.reactives
         Task<T> call(); // note: no async here
     }
 
-    public abstract class IeBaseAsyncCallable<T>: IeAsyncCallable<T> {
+    // public abstract class IeBaseAsyncCallable<T>: IeAsyncCallable<T> {
         
-        //R IMapFunction<T,R>.convertIntoData(T input) { // such statement will incur a building error
-        public Task<T> call() {        
-            try {
-                return doConversion(input);
-            }
-            catch (Exception cause) {
-                Console.WriteLine("{0} - {1}", "IeBaseConverter", "Error on doConversion()");                
-                if (cause is IeRuntimeException) {
-                    throw ((IeRuntimeException) cause);
-                }
-                else {
-                    throw new IeRuntimeException(
-                        "IeBaseConverter - Error on doConversion()", cause, Base.INTERNAL_CONVERSION_ERROR);
-                }
-            }
-        }
+    //     //R IMapFunction<T,R>.convertIntoData(T input) { // such statement will incur a building error
+    //     public Task<T> call() {        
+    //         try {
+    //             return doConversion(input);
+    //         }
+    //         catch (Exception cause) {
+    //             Console.WriteLine("{0} - {1}", "IeBaseConverter", "Error on doConversion()");                
+    //             if (cause is IeRuntimeException) {
+    //                 throw ((IeRuntimeException) cause);
+    //             }
+    //             else {
+    //                 throw new IeRuntimeException(
+    //                     "IeBaseConverter - Error on doConversion()", cause, Base.INTERNAL_CONVERSION_ERROR);
+    //             }
+    //         }
+    //     }
         
-        protected abstract R doConversion(T input);
-    }
+    //     protected abstract R doConversion(T input);
+    // }
 }

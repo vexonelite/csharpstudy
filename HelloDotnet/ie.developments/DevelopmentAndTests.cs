@@ -6,6 +6,7 @@ using System.Threading.Tasks;       // need for Parallel.For() Method
 using System.Linq;                  // need for usage of Enumerable.Sum() Method, e.g., List<int>.Sum()
 using ie.delegates.reactives;
 
+
 namespace ie.developments
 {
     public class TestRepository: IRunnable {
@@ -40,6 +41,21 @@ namespace ie.developments
             }
         }
     }
+
+    public class TestRepository2: IRunnable {
+        private readonly Action<int> callback;
+
+        public TestRepository2(Action<int> callback) {
+            this.callback = callback;
+        }
+
+        //void IRunnable.run() { // such statement will incur a building error
+        public  void run() {        
+            
+        }
+    }
+
+    ///
 
     public abstract class AbsPrimeNumberFinder: IRunnable {
         protected List<int> GetPrimeNumbers(int minimum, int maximum) {
@@ -103,7 +119,98 @@ namespace ie.developments
             Console.WriteLine("Total prime numbers: {0}\nProcess time: {1}", result, sw.ElapsedMilliseconds);
         }
     }
-    
+
+    ///
+
+    public class ActionDelegateTest<T> {
+        
+        public void testAction1(Action action) {
+            action.Invoke();
+        }
+
+        public void testAction2(Action<T> action, T item) {
+            action.Invoke(item);
+        }
+    }
+
+    public class FuncDelegateTest<T, R> {
+        
+        public R testFunc1(Func<R> function) {
+            return function.Invoke();
+        }
+
+        public R testFunc2(Func<T, R> function, T item) {
+            return function.Invoke(item);
+        }
+    }
+
+    ///
+
+    /** 
+     * [Singleton Design Pattern In C#](https://www.c-sharpcorner.com/UploadFile/8911c4/singleton-design-pattern-in-C-Sharp/)
+     */
+    public sealed class SimpleSealedFoo {
+        public readonly string name = "Suresh Dasari";
+        public readonly string location = "Hyderabad";
+
+        public void GetInfo() {
+            Console.WriteLine("Name: {0}", name);
+            Console.WriteLine("Location: {0}", location);
+        }
+    }
+
+    /**
+     * class ``ie.developments.SimpleSealedFoo``
+     * 'DerivedSealedFoo': cannot derive from sealed type 'SimpleSealedFoo' [HelloDotnet]csharp(CS0509)
+     */    
+    // public class DerivedSealedFoo : SimpleSealedFoo {
+    //     public int age = 32;
+    //     public void GetAge(){ 
+    //         Console.WriteLine("Age: {0}", age);
+    //     }
+    // }
+
+    ///
+
+    /**
+     * A Singleton class
+     */
+    public sealed class FooManager {  
+
+        /** private constructor */
+        private FooManager() { }  
+
+        private static readonly object padlock = new object();  
+        /** 
+         * A static variable that holds a reference to the single created instance,
+         */
+        private static FooManager instance = null;  
+        /** 
+         * A public static means of getting the reference to the single created instance
+         */
+        public static FooManager Instance  
+        {  
+            get  
+            {  
+                if (null == instance) {  
+                    lock (padlock) {  
+                        if (null == instance) {  
+                            instance = new FooManager();  
+                        }  
+                    }  
+                }  
+                return instance;  
+            }  
+        }  
+
+        public double ValueOne { get; set; }  
+        public double ValueTwo { get; set; }  
+        public double Addition() { return ValueOne + ValueTwo;  }  
+        public double Subtraction() { return ValueOne - ValueTwo; }  
+        public double Multiplication() { return ValueOne * ValueTwo; }  
+        public double Division() { return ValueOne / ValueTwo; }
+    }
+
     public class TestTaskCancellation {
 
         public async Task runTask() {
@@ -146,29 +253,6 @@ namespace ie.developments
 
                     Console.ReadKey();
         }
-        
-        
-    }
-
-    public class ActionDelegateTest<T> {
-        
-        public void testAction1(Action action) {
-            action.Invoke();
-        }
-
-        public void testAction2(Action<T> action, T item) {
-            action.Invoke(item);
-        }
-    }
-
-    public class FuncDelegateTest<T, R> {
-        
-        public R testFunc1(Func<R> function) {
-            return function.Invoke();
-        }
-
-        public R testFunc2(Func<T, R> function, T item) {
-            return function.Invoke(item);
-        }
     }
 }
+

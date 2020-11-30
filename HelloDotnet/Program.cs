@@ -133,11 +133,14 @@ namespace RectangleApplication {
          //runTestSingleton();
 
          //runTaskDelay();         
-         //runTaskDelay2();
+         //
          
          while (true) {
             // Start computation.
-            Example();
+            //Example();
+            //runTaskDelay();
+            //runTaskDelay2();
+            runHttpAsync();
             // Handle user input.
             string result = Console.ReadLine();
             Console.WriteLine("You typed: " + result);
@@ -156,7 +159,7 @@ namespace RectangleApplication {
          int size = 0;
          for (int z = 0; z < 100; z++) {
             Console.WriteLine("Allocate z: {0}", z);
-            for (int i = 0; i < 1000000; i++) {
+            for (int i = 0; i < 100; i++) {
                Console.WriteLine("Allocate i: {0}", i);
                string value = i.ToString();
                size += value.Length;
@@ -178,12 +181,12 @@ namespace RectangleApplication {
          Task<int> task = Task.Run(async () => 
               {
                   if (Thread.CurrentThread.Name == null) {
-                     Thread.CurrentThread.Name = "Thread1";
+                     Thread.CurrentThread.Name = "Thread In1";
                   }
                   Console.WriteLine("# 11 CurrentThread.name: {0}", Thread.CurrentThread.Name);
                   await Task.Delay(2000, source.Token).ConfigureAwait(false);
                   if (Thread.CurrentThread.Name == null) {
-                     Thread.CurrentThread.Name = "Thread3";
+                     Thread.CurrentThread.Name = "Thread In2";
                   }
                   Console.WriteLine("# 12 CurrentThread.name: {0}", Thread.CurrentThread.Name);
                   Random random = new System.Random();
@@ -199,15 +202,17 @@ namespace RectangleApplication {
 
          try {
             if (Thread.CurrentThread.Name == null) {
-               Thread.CurrentThread.Name = "Thread2";
+               Thread.CurrentThread.Name = "Thread Caller1";
             }
-            
-            Console.WriteLine("runTaskDelay on thread {0}", Thread.CurrentThread.Name);
+            Console.WriteLine("runTaskDelay on {0}", Thread.CurrentThread.Name);
             int result = task.GetAwaiter().GetResult();            
-            Console.WriteLine("runTaskDelay - result :{0} on thread {1}", result, Thread.CurrentThread.Name);
+            if (Thread.CurrentThread.Name == null) {
+               Thread.CurrentThread.Name = "Thread Caller2";
+            }
+            Console.WriteLine("runTaskDelay - result :{0} on {1}", result, Thread.CurrentThread.Name);
          }
          catch (Exception cause) {
-            Console.WriteLine("runTaskDelay - Error Message :{0} on Thread {1}", cause.Message, Thread.CurrentThread.Name);
+            Console.WriteLine("runTaskDelay - Error Message :{0} on {1}", cause.Message, Thread.CurrentThread.Name);
          }
       }
 
@@ -217,15 +222,17 @@ namespace RectangleApplication {
 
          try {
             if (Thread.CurrentThread.Name == null) {
-               Thread.CurrentThread.Name = "Thread2";
+               Thread.CurrentThread.Name = "Thread Caller1";
             }
-            
-            Console.WriteLine("runTaskDelay on thread {0}", Thread.CurrentThread.Name);
-            int result = await getIntWithDelayAsync(source).ConfigureAwait(false);        
-            Console.WriteLine("runTaskDelay - result :{0} on thread {1}", result, Thread.CurrentThread.Name);
+            Console.WriteLine("runTaskDelay 2 on {0}", Thread.CurrentThread.Name);
+            int result = await getIntWithDelayAsync(source).ConfigureAwait(false);
+            if (Thread.CurrentThread.Name == null) {
+               Thread.CurrentThread.Name = "Thread Caller2";
+            }
+            Console.WriteLine("runTaskDelay 2 - result :{0} on {1}", result, Thread.CurrentThread.Name);
          }
          catch (Exception cause) {
-            Console.WriteLine("runTaskDelay - Error Message :{0} on Thread {1}", cause.Message, Thread.CurrentThread.Name);
+            Console.WriteLine("runTaskDelay 2 - Error Message :{0} on {1}", cause.Message, Thread.CurrentThread.Name);
          }
       }
 
@@ -233,27 +240,27 @@ namespace RectangleApplication {
          return Task.Run(async () => 
               {
                   if (Thread.CurrentThread.Name == null) {
-                     Thread.CurrentThread.Name = "Thread1";
+                     Thread.CurrentThread.Name = "Thread In1";
                   }
-                  Console.WriteLine("# 11 CurrentThread.name: {0}", Thread.CurrentThread.Name);
+                  Console.WriteLine("getIntWithDelayAsync # 11 CurrentThread.name: {0}", Thread.CurrentThread.Name);
                   await Task.Delay(2000, source.Token).ConfigureAwait(false);
                   if (Thread.CurrentThread.Name == null) {
-                     Thread.CurrentThread.Name = "Thread3";
+                     Thread.CurrentThread.Name = "Thread In2";
                   }
-                  Console.WriteLine("# 12 CurrentThread.name: {0}", Thread.CurrentThread.Name);
+                  Console.WriteLine("getIntWithDelayAsync # 12 CurrentThread.name: {0}", Thread.CurrentThread.Name);
                   Random random = new System.Random();
                   int value = random.Next(0, 100); //returns integer of 0-100
                   if (value % 2 == 0) {
                      return 42;
                   }
                   else {
-                     throw new IeRuntimeException("Error Task Run AAA", Base.INTERNAL_CONVERSION_ERROR);                
+                     throw new IeRuntimeException("getIntWithDelayAsync - Error Task Run AAA", Base.INTERNAL_CONVERSION_ERROR);                
                   }
                   
               }, source.Token);    
       }
 
-      private async Task runHttpAsync() {
+      private static async Task runHttpAsync() {
          // Call asynchronous network methods in a try/catch block to handle exceptions.
          try {
             HttpResponseMessage response = await client.GetAsync("http://www.contoso.com/");

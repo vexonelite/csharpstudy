@@ -213,6 +213,16 @@ namespace ie.developments
 
     public class TestTaskCancellation {
 
+        private readonly CancellationTokenSource tokenSource = new CancellationTokenSource();
+
+        public void cancelTask() {
+            tokenSource.Cancel();
+        }
+
+        public void disposeTask() {
+            tokenSource.Dispose();
+        }
+
         public async Task runTask() {
             var tokenSource2 = new CancellationTokenSource();
             CancellationToken ct = tokenSource2.Token;

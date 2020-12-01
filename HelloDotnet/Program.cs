@@ -9,6 +9,7 @@ using ie.structures;
 using System.Net.Http;           // need for HttpClient
 using System.Threading;          // need for CancellationTokenSource
 using System.Threading.Tasks;    // need for Parallel.For() Method, Task
+using System.Text.Json;
 
 // namespace HelloDotnet
 // {
@@ -147,7 +148,17 @@ namespace RectangleApplication {
          //runTestSingleton();
 
          //runTaskDelay();         
-         //
+         
+         WeatherForecast weatherForecast = new WeatherForecast();
+         weatherForecast.Date = DateTimeOffset.Now;
+         weatherForecast.TemperatureCelsius = 25;
+         weatherForecast.Summary = "Hot";
+         var options = new JsonSerializerOptions {
+            WriteIndented = true,
+         };
+         string jsonString = JsonSerializer.Serialize(weatherForecast, options);
+            Console.WriteLine("Serialized - jsonString: {0}", jsonString);
+
          
          while (true) {
             // Start computation.
@@ -163,6 +174,8 @@ namespace RectangleApplication {
             //new TeskAsyncAwaitTask5(new TeskAsyncAwaitTask5Callback().onResult).run(); // issue task and work concurrently (by using callback)
             
             new IeHttpGetTask(client).run();
+            //string json = "{\"Date\":\"2019-08-01T00:00:00-07:00\",\"TemperatureCelsius\":25,\"Summary\":\"Hot\"}";
+
             //runHttpAsync();
             // Handle user input.
             string result = Console.ReadLine();
@@ -170,7 +183,11 @@ namespace RectangleApplication {
          }
       }
 
-      
+      public class WeatherForecast {
+         public DateTimeOffset Date { get; set; }
+         public int TemperatureCelsius { get; set; }
+         public string Summary { get; set; }
+      }
 
       private static async Task runHttpAsync() {
          // Call asynchronous network methods in a try/catch block to handle exceptions.

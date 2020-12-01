@@ -410,16 +410,24 @@ namespace ie.developments
                 // response.EnsureSuccessStatusCode();
                 // string responseBody = await response.Content.ReadAsStringAsync();
             
-                HttpResponseMessage response = await httpClient.GetAsync("https://api.github.com/users/vexonelite");            
-                Console.WriteLine("IeHttpGetTask - StatusCode: {0}", response.StatusCode);
+                // HttpResponseMessage response = await httpClient.GetAsync("https://api.github.com/users/vexonelite");            
+                // Console.WriteLine("IeHttpGetTask - StatusCode: {0}", response.StatusCode);
                 // response.EnsureSuccessStatusCode();
                 // string responseBody = await response.Content.ReadAsStringAsync();
 
                 // Above three lines can be replaced with new helper method below
 
-                // httpClient.DefaultRequestHeaders.Accept.Add(
-                //     new MediaTypeWithQualityHeaderValue("application/json"));
+                HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, "https://api.github.com/users/vexonelite");
+                // Add our custom headers to avoid 403 forbidden!!
+                // https://stackoverflow.com/questions/20581117/parsing-from-website-which-return-403-forbidden
+                // https://docs.github.com/en/free-pro-team@latest/rest/overview/resources-in-the-rest-api#user-agent-required
+                requestMessage.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0");
+                HttpResponseMessage response = await httpClient.SendAsync(requestMessage);
+                Console.WriteLine("IeHttpGetTask - StatusCode: {0}", response.StatusCode);
+                string responseBody = await response.Content.ReadAsStringAsync();
+                Console.WriteLine("IeHttpGetTask - responseBody: {0}", responseBody);
 
+                
                 // string responseBody = await httpClient.GetStringAsync("https://api.github.com/users/vexonelite");
                 //Console.WriteLine("IeHttpGetTask - response: {0}", responseBody);
             }
@@ -427,6 +435,23 @@ namespace ie.developments
                 Console.WriteLine("IeHttpGetTask - Error on httpClient.GetStringAsync: {0}", cause.Message);
             }
         }
+    }
+
+    ///
+
+    public class WeatherForecastWithPOCOs {
+        public DateTimeOffset Date { get; set; }
+        public int TemperatureCelsius { get; set; }
+        public string Summary { get; set; }
+        public string SummaryField;
+        public IList<DateTimeOffset> DatesAvailable { get; set; }
+        public Dictionary<string, HighLowTemps> TemperatureRanges { get; set; }
+        public string[] SummaryWords { get; set; }
+    }
+
+    public class HighLowTemps {
+        public int High { get; set; }
+        public int Low { get; set; }
     }
 
     ///

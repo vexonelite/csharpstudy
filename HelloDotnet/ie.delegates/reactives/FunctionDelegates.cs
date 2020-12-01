@@ -13,6 +13,10 @@ namespace ie.delegates.reactives
         R call();
     }
 
+    public interface IApiResult<in R> {
+        void onResult(R result);
+    }
+
     public interface IMapFunction<in T, out R> {
         R convertIntoData(T input);
     }
@@ -25,10 +29,20 @@ namespace ie.delegates.reactives
         Boolean predicate(T input1, R input2);
     }
 
-    public abstract class IeBaseConverter<T, R>: IMapFunction<T, R> {
-        
-        //R IMapFunction<T,R>.convertIntoData(T input) { // such statement will incur a building error
-        public R convertIntoData(T input) {        
+    public abstract class AbsMapFunction<T, R> : IMapFunction<T, R> {
+        public abstract R convertIntoData(T input);
+    }
+
+    // public abstract class IeTestBaseConverter<T, R>: IMapFunction<T, R> {
+            // R IMapFunction<T,R>.convertIntoData(T input) { // such statement will incur a building error    
+
+            // public sealed override R convertIntoData(T input) { } // error here!!
+
+            // public R convertIntoData(T input) { } // valid case!!
+    // }
+
+    public abstract class IeBaseConverter<T, R>: AbsMapFunction<T, R> {
+        public sealed override R convertIntoData(T input) {        
             try {
                 return doConversion(input);
             }
@@ -47,8 +61,14 @@ namespace ie.delegates.reactives
         protected abstract R doConversion(T input);
     }
 
-    public interface IeAsyncCallable<T> {
-        Task<T> call(); // note: no async here
+    ///
+
+    public interface IeAsyncCallable {
+        Task run(); // note: no async here
+    }
+
+    public interface IeAsyncCallable2<T> {
+        Task<T> run(); // note: no async here
     }
 
     // public abstract class IeBaseAsyncCallable<T>: IeAsyncCallable<T> {

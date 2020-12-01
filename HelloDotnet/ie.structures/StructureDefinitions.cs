@@ -1,8 +1,21 @@
 using System;
 //using ie.delegates;
+using ie.exceptions;
+
 
 namespace ie.structures
 {
+   public struct IeApiResponse<T> {
+      public readonly T result;
+
+      public readonly IeRuntimeException error;
+
+      public IeApiResponse(T result, IeRuntimeException error) { 
+         this.result = result;
+         this.error = error;         
+      }
+   }
+
    public struct Books {
       private readonly string title;
       private readonly string author;

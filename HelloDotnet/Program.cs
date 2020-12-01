@@ -111,6 +111,20 @@ namespace RectangleApplication {
       }
    }
 
+   class TeskAsyncAwaitTask5Callback: IApiResult<IeApiResponse<int?>> {
+      public void onResult(IeApiResponse<int?> response) {
+         if (Thread.CurrentThread.Name == null) {
+            Thread.CurrentThread.Name = "Thread CallerAA";
+         }         
+         if (null != response.result) {
+            Console.WriteLine("TeskAsyncAwaitTask5Callback - result :{0} on {1}", response.result, Thread.CurrentThread.Name);
+         }
+         else if (null != response.error) {
+            Console.WriteLine("TeskAsyncAwaitTask5Callback - Error Message :{0} on {1}", response.error.Message, Thread.CurrentThread.Name);
+         }
+      }
+   }
+   
    class ExecuteRectangle {
 
       // HttpClient is intended to be instantiated once per application, rather than per-use. See Remarks.
@@ -137,128 +151,26 @@ namespace RectangleApplication {
          
          while (true) {
             // Start computation.
-            //Example();
-            //runTaskDelay();
-            //runTaskDelay2();
-            runHttpAsync();
+            
+            //TeskAsyncAwaitTask1.Example();         
+            //new TeskAsyncAwaitTask2().run().GetAwaiter().GetResult();
+
+            //TeskAsyncAwaitTask3.runTaskDelay();
+            //TeskAsyncAwaitTask4.runTaskDelay2();
+
+            //new TeskAsyncAwaitTask5().run().GetAwaiter().GetResult(); // block current thread
+            //new TeskAsyncAwaitTask5(null).run();  // issue task and work concurrently
+            //new TeskAsyncAwaitTask5(new TeskAsyncAwaitTask5Callback().onResult).run(); // issue task and work concurrently (by using callback)
+            
+            new IeHttpGetTask(client).run();
+            //runHttpAsync();
             // Handle user input.
             string result = Console.ReadLine();
             Console.WriteLine("You typed: " + result);
          }
       }
 
-      static async void Example() {
-         // This method runs asynchronously.
-         int t = await Task.Run(() => Allocate());
-         Console.WriteLine("Compute: " + t);
-      }
-
-      static int Allocate(){
-         Console.WriteLine("Allocate");
-         // Compute total count of digits in strings.
-         int size = 0;
-         for (int z = 0; z < 100; z++) {
-            Console.WriteLine("Allocate z: {0}", z);
-            for (int i = 0; i < 100; i++) {
-               Console.WriteLine("Allocate i: {0}", i);
-               string value = i.ToString();
-               size += value.Length;
-            }
-        }
-        Console.WriteLine("Allocate end");
-        return size;
-      }
-
-      private static void runTaskDelay() {
-
-         CancellationTokenSource source = new CancellationTokenSource();
-
-         // var t = Task.Run(async delegate
-         //      {
-         //         await Task.Delay(1000, source.Token);
-         //         return 42;
-         //      });
-         Task<int> task = Task.Run(async () => 
-              {
-                  if (Thread.CurrentThread.Name == null) {
-                     Thread.CurrentThread.Name = "Thread In1";
-                  }
-                  Console.WriteLine("# 11 CurrentThread.name: {0}", Thread.CurrentThread.Name);
-                  await Task.Delay(2000, source.Token).ConfigureAwait(false);
-                  if (Thread.CurrentThread.Name == null) {
-                     Thread.CurrentThread.Name = "Thread In2";
-                  }
-                  Console.WriteLine("# 12 CurrentThread.name: {0}", Thread.CurrentThread.Name);
-                  Random random = new System.Random();
-                  int value = random.Next(0, 100); //returns integer of 0-100
-                  if (value % 2 == 0) {
-                     return 42;
-                  }
-                  else {
-                     throw new IeRuntimeException("Error Task Run AAA", Base.INTERNAL_CONVERSION_ERROR);                
-                  }
-                  
-              }, source.Token);
-
-         try {
-            if (Thread.CurrentThread.Name == null) {
-               Thread.CurrentThread.Name = "Thread Caller1";
-            }
-            Console.WriteLine("runTaskDelay on {0}", Thread.CurrentThread.Name);
-            int result = task.GetAwaiter().GetResult();            
-            if (Thread.CurrentThread.Name == null) {
-               Thread.CurrentThread.Name = "Thread Caller2";
-            }
-            Console.WriteLine("runTaskDelay - result :{0} on {1}", result, Thread.CurrentThread.Name);
-         }
-         catch (Exception cause) {
-            Console.WriteLine("runTaskDelay - Error Message :{0} on {1}", cause.Message, Thread.CurrentThread.Name);
-         }
-      }
-
-      private static async void runTaskDelay2() {
-
-         CancellationTokenSource source = new CancellationTokenSource();
-
-         try {
-            if (Thread.CurrentThread.Name == null) {
-               Thread.CurrentThread.Name = "Thread Caller1";
-            }
-            Console.WriteLine("runTaskDelay 2 on {0}", Thread.CurrentThread.Name);
-            int result = await getIntWithDelayAsync(source).ConfigureAwait(false);
-            if (Thread.CurrentThread.Name == null) {
-               Thread.CurrentThread.Name = "Thread Caller2";
-            }
-            Console.WriteLine("runTaskDelay 2 - result :{0} on {1}", result, Thread.CurrentThread.Name);
-         }
-         catch (Exception cause) {
-            Console.WriteLine("runTaskDelay 2 - Error Message :{0} on {1}", cause.Message, Thread.CurrentThread.Name);
-         }
-      }
-
-      private static Task<int> getIntWithDelayAsync(CancellationTokenSource source) {
-         return Task.Run(async () => 
-              {
-                  if (Thread.CurrentThread.Name == null) {
-                     Thread.CurrentThread.Name = "Thread In1";
-                  }
-                  Console.WriteLine("getIntWithDelayAsync # 11 CurrentThread.name: {0}", Thread.CurrentThread.Name);
-                  await Task.Delay(2000, source.Token).ConfigureAwait(false);
-                  if (Thread.CurrentThread.Name == null) {
-                     Thread.CurrentThread.Name = "Thread In2";
-                  }
-                  Console.WriteLine("getIntWithDelayAsync # 12 CurrentThread.name: {0}", Thread.CurrentThread.Name);
-                  Random random = new System.Random();
-                  int value = random.Next(0, 100); //returns integer of 0-100
-                  if (value % 2 == 0) {
-                     return 42;
-                  }
-                  else {
-                     throw new IeRuntimeException("getIntWithDelayAsync - Error Task Run AAA", Base.INTERNAL_CONVERSION_ERROR);                
-                  }
-                  
-              }, source.Token);    
-      }
+      
 
       private static async Task runHttpAsync() {
          // Call asynchronous network methods in a try/catch block to handle exceptions.
@@ -430,5 +342,4 @@ namespace RectangleApplication {
          repository1.run();
       }
    }
-   
 }

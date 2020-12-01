@@ -4,7 +4,12 @@ using System.Diagnostics;           // need for Stopwatch
 using System.Threading;             // need for CancellationTokenSource
 using System.Threading.Tasks;       // need for Parallel.For() Method
 using System.Linq;                  // need for usage of Enumerable.Sum() Method, e.g., List<int>.Sum()
+using System.Net.Http;              // need for HttpClient
+using System.Net.Http.Headers;      
 using ie.delegates.reactives;
+using ie.errorcodes;
+using ie.exceptions;
+using ie.structures;
 
 
 namespace ie.developments
@@ -39,19 +44,6 @@ namespace ie.developments
             if (null != callback) {
                 callback.Invoke(count);
             }
-        }
-    }
-
-    public class TestRepository2: IRunnable {
-        private readonly Action<int> callback;
-
-        public TestRepository2(Action<int> callback) {
-            this.callback = callback;
-        }
-
-        //void IRunnable.run() { // such statement will incur a building error
-        public  void run() {        
-            
         }
     }
 
@@ -211,9 +203,244 @@ namespace ie.developments
         public double Division() { return ValueOne / ValueTwo; }
     }
 
-    public class TestTaskCancellation {
+    public class TestRepository2: IRunnable {
+        private readonly Action<int> callback;
 
-        private readonly CancellationTokenSource tokenSource = new CancellationTokenSource();
+        public TestRepository2(Action<int> callback) {
+            this.callback = callback;
+        }
+
+        //void IRunnable.run() { // such statement will incur a building error
+        public void run() {        
+            
+        }
+    }
+
+    ///
+
+    public class TeskAsyncAwaitTask1 {
+
+        public static async void Example() {
+            // This method runs asynchronously.
+            int t = await Task.Run(() => Allocate());
+            Console.WriteLine("Compute: " + t);
+        }
+
+        static int Allocate(){
+            Console.WriteLine("Allocate");
+            // Compute total count of digits in strings.
+            int size = 0;
+            for (int z = 0; z < 100; z++) {
+                Console.WriteLine("Allocate z: {0}", z);
+                for (int i = 0; i < 100; i++) {
+                    Console.WriteLine("Allocate i: {0}", i);
+                    string value = i.ToString();
+                    size += value.Length;
+                }
+            }
+            Console.WriteLine("Allocate end");
+            return size;
+        }
+    }
+
+    public class TeskAsyncAwaitTask2: IeAsyncCallable {
+        public async Task run() {
+            // This method runs asynchronously.
+            int t = await Task.Run(() => Allocate()).ConfigureAwait(false);
+            Console.WriteLine("Compute: " + t);
+        }
+
+        private int Allocate(){
+            Console.WriteLine("Allocate");
+            // Compute total count of digits in strings.
+            int size = 0;
+            for (int z = 0; z < 100; z++) {
+                Console.WriteLine("Allocate z: {0}", z);
+                //for (int i = 0; i < 100000; i++) {
+                for (int i = 0; i < 100; i++) {
+                Console.WriteLine("Allocate i: {0}", i);
+                    string value = i.ToString();
+                    size += value.Length;
+                }
+            }
+            Console.WriteLine("Allocate end");
+            return size;
+        }
+    }
+    
+    ///
+
+    public class TeskAsyncAwaitTask3 {
+        public static void runTaskDelay() {
+
+            CancellationTokenSource source = new CancellationTokenSource();
+
+            // var t = Task.Run(async delegate
+            //      {
+            //         await Task.Delay(1000, source.Token);
+            //         return 42;
+            //      });
+            Task<int> task = Task.Run(async () => 
+            {
+                if (Thread.CurrentThread.Name == null) {
+                    Thread.CurrentThread.Name = "Thread In1";
+                }
+                Console.WriteLine("# 11 CurrentThread.name: {0}", Thread.CurrentThread.Name);
+                await Task.Delay(2000, source.Token).ConfigureAwait(false);
+                if (Thread.CurrentThread.Name == null) {
+                    Thread.CurrentThread.Name = "Thread In2";
+                }
+                Console.WriteLine("# 12 CurrentThread.name: {0}", Thread.CurrentThread.Name);
+                Random random = new System.Random();
+                int value = random.Next(0, 100); //returns integer of 0-100
+                if (value % 2 == 0) {
+                    return 42;
+                }
+                else {
+                    throw new IeRuntimeException("Error Task Run AAA", Base.INTERNAL_CONVERSION_ERROR);
+                }                  
+            }, source.Token);
+
+            try {
+                if (Thread.CurrentThread.Name == null) {
+                    Thread.CurrentThread.Name = "Thread Caller1";
+                }
+                Console.WriteLine("runTaskDelay on {0}", Thread.CurrentThread.Name);
+                int result = task.GetAwaiter().GetResult();            
+                if (Thread.CurrentThread.Name == null) {
+                    Thread.CurrentThread.Name = "Thread Caller2";
+                }
+                Console.WriteLine("runTaskDelay - result :{0} on {1}", result, Thread.CurrentThread.Name);
+            }
+            catch (Exception cause) {
+                Console.WriteLine("runTaskDelay - Error Message :{0} on {1}", cause.Message, Thread.CurrentThread.Name);
+            }
+            finally {
+                source.Dispose();
+            }
+        }
+    }
+
+    public class TeskAsyncAwaitTask4 {
+        public static async void runTaskDelay2() {
+
+            CancellationTokenSource source = new CancellationTokenSource();
+
+            try {
+                if (Thread.CurrentThread.Name == null) {
+                    Thread.CurrentThread.Name = "Thread Caller1";
+                }
+                Console.WriteLine("runTaskDelay 2 on {0}", Thread.CurrentThread.Name);
+                int result = await getIntWithDelayAsync(source).ConfigureAwait(false);
+                if (Thread.CurrentThread.Name == null) {
+                    Thread.CurrentThread.Name = "Thread Caller2";
+                }
+                Console.WriteLine("runTaskDelay 2 - result :{0} on {1}", result, Thread.CurrentThread.Name);
+            }
+            catch (Exception cause) {
+                Console.WriteLine("runTaskDelay 2 - Error Message :{0} on {1}", cause.Message, Thread.CurrentThread.Name);
+            }
+            finally {
+                source.Dispose();
+            }
+        }
+
+        private static Task<int> getIntWithDelayAsync(CancellationTokenSource source) {
+            return Task.Run(async () => 
+                {
+                    if (Thread.CurrentThread.Name == null) {
+                        Thread.CurrentThread.Name = "Thread In1";
+                    }
+                    Console.WriteLine("getIntWithDelayAsync # 11 CurrentThread.name: {0}", Thread.CurrentThread.Name);
+                    await Task.Delay(2000, source.Token).ConfigureAwait(false);
+                    if (Thread.CurrentThread.Name == null) {
+                        Thread.CurrentThread.Name = "Thread In2";
+                    }
+                    Console.WriteLine("getIntWithDelayAsync # 12 CurrentThread.name: {0}", Thread.CurrentThread.Name);
+                    Random random = new System.Random();
+                    int value = random.Next(0, 100); //returns integer of 0-100
+                    if (value % 2 == 0) {
+                        return 42;
+                    }
+                    else {
+                        throw new IeRuntimeException("getIntWithDelayAsync - Error Task Run AAA", Base.INTERNAL_CONVERSION_ERROR);                
+                    }                  
+                }, source.Token);    
+        }
+    }
+
+    public abstract class AbsAsyncAwaitTask : IeAsyncCallable {
+        public abstract Task run();
+    }
+
+    public abstract class AbsHttpAsyncAwaitTask : AbsAsyncAwaitTask {
+
+        protected readonly HttpClient httpClient;
+
+        public AbsHttpAsyncAwaitTask(HttpClient httpClient) {
+            this.httpClient = httpClient;
+        }
+
+        // public override async Task run() {
+        //     try {
+        //         // HttpResponseMessage response = await client.GetAsync("http://www.contoso.com/");
+        //         // response.EnsureSuccessStatusCode();
+        //         // string responseBody = await response.Content.ReadAsStringAsync();
+            
+        //         // Above three lines can be replaced with new helper method below
+        //         string responseBody = await httpClient.GetStringAsync("https://api.github.com/users/vexonelite");
+        //         Console.WriteLine(responseBody);
+        //     }
+        //     catch(HttpRequestException e) {
+        //         Console.WriteLine("\nException Caught!");	
+        //         Console.WriteLine("Message :{0} ",e.Message);
+        //     }
+        // }
+    }
+
+    ///
+
+    public class IeHttpGetTask : AbsHttpAsyncAwaitTask {
+
+        public IeHttpGetTask(HttpClient httpClient): base(httpClient) { }
+
+        public sealed override async Task run() {
+            try {
+                // HttpResponseMessage response = await client.GetAsync("http://www.contoso.com/");
+                // response.EnsureSuccessStatusCode();
+                // string responseBody = await response.Content.ReadAsStringAsync();
+            
+                HttpResponseMessage response = await httpClient.GetAsync("https://api.github.com/users/vexonelite");            
+                Console.WriteLine("IeHttpGetTask - StatusCode: {0}", response.StatusCode);
+                // response.EnsureSuccessStatusCode();
+                // string responseBody = await response.Content.ReadAsStringAsync();
+
+                // Above three lines can be replaced with new helper method below
+
+                // httpClient.DefaultRequestHeaders.Accept.Add(
+                //     new MediaTypeWithQualityHeaderValue("application/json"));
+
+                // string responseBody = await httpClient.GetStringAsync("https://api.github.com/users/vexonelite");
+                //Console.WriteLine("IeHttpGetTask - response: {0}", responseBody);
+            }
+            catch(HttpRequestException cause) {            
+                Console.WriteLine("IeHttpGetTask - Error on httpClient.GetStringAsync: {0}", cause.Message);
+            }
+        }
+    }
+
+    ///
+
+    public class TeskAsyncAwaitTask5: IeAsyncCallable {
+
+        private readonly CancellationTokenSource tokenSource;
+
+        private readonly Action<IeApiResponse<int?>> callback;
+
+        public TeskAsyncAwaitTask5(Action<IeApiResponse<int?>> callback) {
+            this.tokenSource = new CancellationTokenSource();
+            this.callback = callback;
+        }
 
         public void cancelTask() {
             tokenSource.Cancel();
@@ -222,47 +449,92 @@ namespace ie.developments
         public void disposeTask() {
             tokenSource.Dispose();
         }
-
-        public async Task runTask() {
-            var tokenSource2 = new CancellationTokenSource();
-            CancellationToken ct = tokenSource2.Token;
-
-            var task = Task.Run(() =>
-                    {
-                        // Were we already canceled?
-                        ct.ThrowIfCancellationRequested();
-
-                        bool moreToDo = true;
-                        while (moreToDo)
-                        {
-                            // Poll on this property if you have to do
-                            // other cleanup before throwing.
-                            if (ct.IsCancellationRequested)
-                            {
-                                // Clean up here, then...
-                                ct.ThrowIfCancellationRequested();
-                            }
-                        }
-                    }, tokenSource2.Token); // Pass same token to Task.Run.
-
-                    tokenSource2.Cancel();
-
-                    // Just continue on this thread, or await with try-catch:
-                    try
-                    {
-                        await task;
-                    }
-                    catch (OperationCanceledException e)
-                    {
-                        Console.WriteLine($"{nameof(OperationCanceledException)} thrown with message: {e.Message}");
-                    }
-                    finally
-                    {
-                        tokenSource2.Dispose();
-                    }
-
-                    Console.ReadKey();
+        
+        public async Task run() {            
+            try {
+                if (Thread.CurrentThread.Name == null) {
+                    Thread.CurrentThread.Name = "Thread Caller1";
+                }
+                Console.WriteLine("TeskAsyncAwaitTask5 on {0}", Thread.CurrentThread.Name);
+                int result = await getIntWithDelayAsync();
+                if (Thread.CurrentThread.Name == null) {
+                    Thread.CurrentThread.Name = "Thread Caller2";
+                }
+                Console.WriteLine("TeskAsyncAwaitTask5 - result :{0} on {1}", result, Thread.CurrentThread.Name);
+                IeApiResponse<int?> response = new IeApiResponse<int?>(result, null);
+                if (null != callback) {
+                    callback.Invoke(response);
+                }
+            }
+            catch (Exception cause) {
+                Console.WriteLine("TeskAsyncAwaitTask5 - Error Message :{0} on {1}", cause.Message, Thread.CurrentThread.Name);
+                IeRuntimeException error;
+                if (cause is IeRuntimeException) {
+                    error = ((IeRuntimeException) cause);
+                }
+                else {                    
+                    error = new IeRuntimeException("TeskAsyncAwaitTask5 - Error on run(): [" + cause.Message + "]", cause, "00000");
+                }
+                IeApiResponse<int?> response = new IeApiResponse<int?>(null, error);
+                if (null != callback) {
+                    callback.Invoke(response);
+                }
+            }
+            finally {
+                tokenSource.Dispose();
+            }
         }
+
+        private Task<int> getIntWithDelayAsync() {
+            Random random = new System.Random();
+
+            Task<int> task = Task.Run(async () => 
+            {
+                if (Thread.CurrentThread.Name == null) {
+                    Thread.CurrentThread.Name = "Thread In1";
+                }
+                Console.WriteLine("TeskAsyncAwaitTask5 - getIntWithDelayAsync # 11 CurrentThread.name: {0}", Thread.CurrentThread.Name);
+                await Task.Delay(2000, tokenSource.Token).ConfigureAwait(false);
+                if (Thread.CurrentThread.Name == null) {
+                    Thread.CurrentThread.Name = "Thread In2";
+                }
+                Console.WriteLine("TeskAsyncAwaitTask5 - getIntWithDelayAsync # 12 CurrentThread.name: {0}", Thread.CurrentThread.Name);
+
+                int value = random.Next(0, 100); //returns integer of 0-100
+                if (value % 2 == 1) {
+                    if (!tokenSource.IsCancellationRequested) {
+                        tokenSource.Cancel();
+                        Console.WriteLine("TeskAsyncAwaitTask5 - getIntWithDelayAsync # issue Cancellation request: {0}", Thread.CurrentThread.Name);
+                    }
+                    else {
+                        Console.WriteLine("TeskAsyncAwaitTask5 - getIntWithDelayAsync # Cancellation has been Requested: {0}", Thread.CurrentThread.Name);
+                    }            
+                }
+
+                // tokenSource.Cancel();
+                // Console.WriteLine("TeskAsyncAwaitTask5 - getIntWithDelayAsync # issue Cancellation request: {0}", Thread.CurrentThread.Name);
+
+                await Task.Delay(2000, tokenSource.Token).ConfigureAwait(false);
+                if (Thread.CurrentThread.Name == null) {
+                    Thread.CurrentThread.Name = "Thread In3";
+                }
+                Console.WriteLine("TeskAsyncAwaitTask5 - getIntWithDelayAsync # 12 CurrentThread.name: {0}", Thread.CurrentThread.Name);
+
+                int value2 = random.Next(0, 100); //returns integer of 0-100
+                if (value2 % 2 == 0) {
+                    return 42;
+                }
+                else {
+                    throw new IeRuntimeException("getIntWithDelayAsync - Error Task Run AAA", Base.INTERNAL_CONVERSION_ERROR);                
+                }                  
+            }, tokenSource.Token);
+
+            task.ConfigureAwait(false);
+            
+            return task;
+        } 
     }
+
+    
 }
 

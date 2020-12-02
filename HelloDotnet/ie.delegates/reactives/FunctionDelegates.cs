@@ -71,6 +71,14 @@ namespace ie.delegates.reactives
         Task<T> run(); // note: no async here
     }
 
+    public abstract class AbsAsyncAwaitTask : IeAsyncCallable {
+        public abstract Task run();
+    }
+
+    public abstract class AbsAsyncAwaitTask2<T> : IeAsyncCallable2<T> {
+        public abstract Task<T> run();
+    }
+
     // public abstract class IeBaseAsyncCallable<T>: IeAsyncCallable<T> {
         
     //     //R IMapFunction<T,R>.convertIntoData(T input) { // such statement will incur a building error

@@ -369,9 +369,7 @@ namespace ie.developments
         }
     }
 
-    public abstract class AbsAsyncAwaitTask : IeAsyncCallable {
-        public abstract Task run();
-    }
+    ///
 
     public abstract class AbsHttpAsyncAwaitTask : AbsAsyncAwaitTask {
 
@@ -380,6 +378,7 @@ namespace ie.developments
         public AbsHttpAsyncAwaitTask(HttpClient httpClient) {
             this.httpClient = httpClient;
         }
+    }
 
         // public override async Task run() {
         //     try {
@@ -396,8 +395,6 @@ namespace ie.developments
         //         Console.WriteLine("Message :{0} ",e.Message);
         //     }
         // }
-    }
-
     ///
 
     public class IeHttpGetTask : AbsHttpAsyncAwaitTask {
@@ -405,18 +402,7 @@ namespace ie.developments
         public IeHttpGetTask(HttpClient httpClient): base(httpClient) { }
 
         public sealed override async Task run() {
-            try {
-                // HttpResponseMessage response = await client.GetAsync("http://www.contoso.com/");
-                // response.EnsureSuccessStatusCode();
-                // string responseBody = await response.Content.ReadAsStringAsync();
-            
-                // HttpResponseMessage response = await httpClient.GetAsync("https://api.github.com/users/vexonelite");            
-                // Console.WriteLine("IeHttpGetTask - StatusCode: {0}", response.StatusCode);
-                // response.EnsureSuccessStatusCode();
-                // string responseBody = await response.Content.ReadAsStringAsync();
-
-                // Above three lines can be replaced with new helper method below
-
+            try {                
                 HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, "https://api.github.com/users/vexonelite");
                 // Add our custom headers to avoid 403 forbidden!!
                 // https://stackoverflow.com/questions/20581117/parsing-from-website-which-return-403-forbidden
@@ -425,11 +411,7 @@ namespace ie.developments
                 HttpResponseMessage response = await httpClient.SendAsync(requestMessage);
                 Console.WriteLine("IeHttpGetTask - StatusCode: {0}", response.StatusCode);
                 string responseBody = await response.Content.ReadAsStringAsync();
-                Console.WriteLine("IeHttpGetTask - responseBody: {0}", responseBody);
-
-                
-                // string responseBody = await httpClient.GetStringAsync("https://api.github.com/users/vexonelite");
-                //Console.WriteLine("IeHttpGetTask - response: {0}", responseBody);
+                Console.WriteLine("IeHttpGetTask - responseBody: {0}", responseBody);                
             }
             catch(HttpRequestException cause) {            
                 Console.WriteLine("IeHttpGetTask - Error on httpClient.GetStringAsync: {0}", cause.Message);
@@ -455,6 +437,8 @@ namespace ie.developments
     }
 
     ///
+
+
 
     public class TeskAsyncAwaitTask5: IeAsyncCallable {
 
@@ -562,4 +546,6 @@ namespace ie.developments
 
     
 }
+
+
 

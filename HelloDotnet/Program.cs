@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Net.Http;           // need for HttpClient
+using System.Threading;          // need for CancellationTokenSource
+using System.Threading.Tasks;    // need for Parallel.For() Method, Task
 using ie.delegates;
 using ie.delegates.reactives;
 using ie.developments;
 using ie.errorcodes;
 using ie.exceptions;
 using ie.extension.methods;
+using ie.serializations;
 using ie.structures;
-using System.Net.Http;           // need for HttpClient
-using System.Threading;          // need for CancellationTokenSource
-using System.Threading.Tasks;    // need for Parallel.For() Method, Task
-using System.Text.Json;
+
 
 // namespace HelloDotnet
 // {
@@ -147,18 +148,9 @@ namespace RectangleApplication {
          
          //runTestSingleton();
 
-         //runTaskDelay();         
-         
-         WeatherForecast weatherForecast = new WeatherForecast();
-         weatherForecast.Date = DateTimeOffset.Now;
-         weatherForecast.TemperatureCelsius = 25;
-         weatherForecast.Summary = "Hot";
-         var options = new JsonSerializerOptions {
-            WriteIndented = true,
-         };
-         string jsonString = JsonSerializer.Serialize(weatherForecast, options);
-            Console.WriteLine("Serialized - jsonString: {0}", jsonString);
+         //runTaskDelay();
 
+         new TestJsonSerialization().run();
          
          while (true) {
             // Start computation.
@@ -181,12 +173,6 @@ namespace RectangleApplication {
             string result = Console.ReadLine();
             Console.WriteLine("You typed: " + result);
          }
-      }
-
-      public class WeatherForecast {
-         public DateTimeOffset Date { get; set; }
-         public int TemperatureCelsius { get; set; }
-         public string Summary { get; set; }
       }
 
       private static async Task runHttpAsync() {

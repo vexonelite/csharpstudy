@@ -2,6 +2,8 @@
 using System.Net.Http;           // need for HttpClient
 using System.Threading;          // need for CancellationTokenSource
 using System.Threading.Tasks;    // need for Parallel.For() Method, Task
+
+using ie.collections;
 using ie.delegates;
 using ie.delegates.reactives;
 using ie.developments;
@@ -150,7 +152,9 @@ namespace RectangleApplication {
 
          //runTaskDelay();
 
-         new TestJsonSerialization().run();
+         //new TestJsonSerialization().run();
+
+         new TestListManipulations().run();
          
          while (true) {
             // Start computation.
@@ -165,7 +169,7 @@ namespace RectangleApplication {
             //new TeskAsyncAwaitTask5(null).run();  // issue task and work concurrently
             //new TeskAsyncAwaitTask5(new TeskAsyncAwaitTask5Callback().onResult).run(); // issue task and work concurrently (by using callback)
             
-            new IeHttpGetTask(client).run();
+            //new IeHttpGetTask(client).run();
             //string json = "{\"Date\":\"2019-08-01T00:00:00-07:00\",\"TemperatureCelsius\":25,\"Summary\":\"Hot\"}";
 
             //runHttpAsync();

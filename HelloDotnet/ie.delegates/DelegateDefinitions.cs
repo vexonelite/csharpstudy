@@ -14,6 +14,8 @@ namespace ie.delegates
        string theIdentifier { get; }    // read-only    
     }
 
+    public interface IdentifierCellTypeDelegate : CellTypeDelegate, IdentifierDelegate {}
+
     public interface DateDelegate {    
         DateTime theDate { get; }    // read-only     //DateTime Struct
     }
@@ -21,4 +23,14 @@ namespace ie.delegates
     public interface AnyToIntDelegate {
         int toInteger();
     }
+
+    public interface WiFiSsidDelegate {
+    
+        string theSSID { get; }     // read-only
+
+        string theBSSID { get; }    // read-only    
+
+        string thePassword { get; } // read-only
+    }
+
 }

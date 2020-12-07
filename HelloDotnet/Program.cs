@@ -154,7 +154,11 @@ namespace RectangleApplication {
 
          //new TestJsonSerialization().run();
 
-         new TestListManipulations().run();
+         //new TestListManipulations().run();
+
+         //new TestDictionaryManipulations().run();
+
+         new TestListSorting().run();
          
          while (true) {
             // Start computation.

@@ -2,8 +2,12 @@ using System;
 using System.Collections.Generic;   // need for IList<T>, List<T>, IDictionary<K, V> Dictionary<K, V>
 using System.ComponentModel;
 using System.Linq;
+using ie.comparators;
+using ie.delegates;
 using ie.delegates.reactives;
 using ie.delegates.WiFiScans;
+using ie.models;
+using ie.structures;
 using ie.models.WiFiScans;
 using ie.structures.WiFiScans;
 
@@ -139,6 +143,217 @@ namespace ie.collections
             favouriteCities.AddRange(popularCities);
             favouriteCities.ForEach(favouriteCity => Console.WriteLine("favouriteCity: {0}", favouriteCity));    
             Console.WriteLine("=========================================");
+        }
+    }
+
+    ///
+
+    public class TestListSorting : IRunnable {
+        public void run() {
+            //DateDelegateComparator<SDateDescriptionImpl> sDateComparator = new DateDelegateComparator<SDateDescriptionImpl>(true);
+            //DateDelegateComparator<MDateDescriptionImpl> mDateComparator = new DateDelegateComparator<MDateDescriptionImpl>(true);
+
+                // return 1;
+                // for order by descending
+
+            DateDelegateComparator<DateDescriptionDelegate> dateAscendingComparator = new DateDelegateComparator<DateDescriptionDelegate>(true);
+            DateDelegateComparator<DateDescriptionDelegate> dateDescendingComparator = new DateDelegateComparator<DateDescriptionDelegate>(false);
+
+            DescriptionDelegateComparator<DateDescriptionDelegate> descriptionAscendingComparator = new DescriptionDelegateComparator<DateDescriptionDelegate>(true);
+            DescriptionDelegateComparator<DateDescriptionDelegate> descriptionDescendingComparator = new DescriptionDelegateComparator<DateDescriptionDelegate>(false);
+
+            DateTime currentTime = DateTime.Now;
+                    
+            //IList<DateDescriptionDelegate> dataSet = new List<DateDescriptionDelegate>() {
+            List<DateDescriptionDelegate> dataSet = new List<DateDescriptionDelegate>() {            
+                new SDateDescriptionImpl(currentTime.AddDays(-1), "Alice"),
+                new MDateDescriptionImpl(currentTime.AddDays(-2), "Bob"),
+                new SDateDescriptionImpl(currentTime.AddDays(-3), "Cammy"),
+                new MDateDescriptionImpl(currentTime.AddDays(-4), "Daniel"),
+            };
+
+
+            dataSet.Sort(dateAscendingComparator);
+            foreach(DateDescriptionDelegate item in dataSet) {
+                Console.WriteLine("dateAscending: {0}", item);
+            }
+            Console.WriteLine("=========================================");
+
+            dataSet.Sort(dateDescendingComparator);
+            foreach(DateDescriptionDelegate item in dataSet) {
+                Console.WriteLine("ateDescending: {0}", item);
+            }
+            Console.WriteLine("=========================================");
+
+            dataSet.Sort(descriptionAscendingComparator);
+            foreach(DateDescriptionDelegate item in dataSet) {
+                Console.WriteLine("descriptionAscending: {0}", item);
+            }
+            Console.WriteLine("=========================================");
+
+            dataSet.Sort(descriptionDescendingComparator);
+            foreach(DateDescriptionDelegate item in dataSet) {
+                Console.WriteLine("descriptionDescending: {0}", item);
+            }
+            Console.WriteLine("=========================================");
+        }
+    }
+    
+    ///
+
+    public class TestDictionaryManipulations : IRunnable {
+        public void run() {
+
+            IDictionary<int, string> numberNames = new Dictionary<int, string>();
+            numberNames.Add(1,"One"); //adding a key/value using the Add() method
+            numberNames.Add(2,"Two");
+            numberNames.Add(3,"Three");
+
+            try {
+                //The following throws run-time exception: key already added.
+                numberNames.Add(3, "Three"); 
+            }
+            catch(ArgumentException error) {
+                Console.WriteLine("error on Add with an existing key: {0}", error.Message);
+            }
+
+            foreach(KeyValuePair<int, string> kvp in numberNames) {
+                Console.WriteLine("Key: {0}, Value: {1} in numberNames", kvp.Key, kvp.Value);
+            }
+            Console.WriteLine("=========================================");
+            
+            //var cities = new Dictionary<string, string>(){
+            IDictionary<string, string> cityDict = new Dictionary<string, string>() {
+                {"UK", "London, Manchester, Birmingham"},
+                {"USA", "Chicago, New York, Washington"},
+                {"India", "Mumbai, New Delhi, Pune"}
+            };
+
+            // KeyValuePair: kvp
+            foreach(var kvp in cityDict) {
+                //Console.WriteLine("Key: {0}, Value: {1} in cityDict - class name: {2}", kvp.Key, kvp.Value, TypeDescriptor.GetClassName(kvp));
+                Console.WriteLine("Key: {0}, Value: {1} in cityDict", kvp.Key, kvp.Value);
+            }
+            Console.WriteLine("=========================================");
+
+            // access via indexer
+            Console.WriteLine(cityDict["UK"]); //prints value of UK key
+            Console.WriteLine(cityDict["USA"]);//prints value of USA key
+            try {
+                //The following throws run-time exception: key already added.
+                Console.WriteLine(cityDict["France"]); // run-time exception: Key does not exist
+            }
+            catch(Exception error) {
+                Console.WriteLine("error on access with a non-existing key: {0}", error.Message);
+            }
+            Console.WriteLine("*****************************************");
+
+            //use ContainsKey() to check for an unknown key
+            if(cityDict.ContainsKey("France")){  
+                Console.WriteLine(cityDict["France"]);
+            } else {
+                Console.WriteLine("cityDict does not ContainsKey [France]");
+            }
+            Console.WriteLine("*****************************************");
+
+            //use TryGetValue() to get a value of unknown key
+            string result;
+            if(cityDict.TryGetValue("France", out result)) {
+                Console.WriteLine(result);
+            }
+            else {
+                Console.WriteLine("[TryGetValue] cityDict does not Contains Key [France]");
+            }
+            Console.WriteLine("*****************************************");
+
+            //use ElementAt() to retrieve key-value pair using index
+            for(int i = 0; i < cityDict.Count; i++) {
+                KeyValuePair<string, string> kvp = cityDict.ElementAt(i);
+                Console.WriteLine("[ElementAt] Key: {0}, Value: {1}", kvp.Key, kvp.Value);
+            }
+            Console.WriteLine("*****************************************");
+
+            cityDict["UK"] = "Liverpool, Bristol"; // update value of UK key
+            cityDict["USA"] = "Los Angeles, Boston"; // update value of USA key
+            try {
+                // the teach blog put it: throws run-time exception: KeyNotFoundException
+                // but this is a valid statement after test - 2020/12/07
+                cityDict["France"] = "Paris";
+                Console.WriteLine("update [Paris] with key [France]");
+            }
+            catch(Exception error) {
+                Console.WriteLine("error on update with a non-existing key: {0}", error.Message);
+            }
+            if(cityDict.TryGetValue("France", out result)) {
+                Console.WriteLine("Get France [1]: {0}", result);
+            }
+            Console.WriteLine("*****************************************");
+
+            if(cityDict.ContainsKey("France")) {
+                // we can update multiple time with same key - 2020/12/07
+                cityDict["France"] = "ParisX";
+                cityDict["France"] = "ParisXY";
+                cityDict["France"] = "ParisXYZ";
+                Console.WriteLine("update [ParisX] with key [France]");
+            }
+            else {
+                Console.WriteLine("[Update] cityDict does not Contains Key [France]");
+            }
+            if(cityDict.TryGetValue("France", out result)) {
+                Console.WriteLine("Get France [2]: {0}", result);
+            }
+            Console.WriteLine("*****************************************");
+            
+            // Shanghai
+            cityDict["China"] = "Beijing";
+            cityDict["Japan"] = "Tokyo";            
+            cityDict.Remove("UK"); // removes UK 
+
+            try {
+                // the teach blog put it: throws run-time exception: KeyNotFoundException
+                // but this is a valid statement after test - 2020/12/07
+                bool removedResult = cityDict.Remove("Canada"); 
+                Console.WriteLine("remove with a non-existing key [Canada]: {0}", removedResult);
+            }
+            catch(Exception error) {
+                Console.WriteLine("error on remove with a non-existing key: {0}", error.Message);
+            }
+            Console.WriteLine("*****************************************");
+
+            if(cityDict.ContainsKey("Canada")) { // check key before removing it
+                cityDict.Remove("Canada");
+            }
+            else {
+                Console.WriteLine("[Remove] cityDict does not Contains Key [Canada]");
+            }
+            Console.WriteLine("*****************************************");
+
+            foreach(var kvp in cityDict) {
+                Console.WriteLine("[after removal] Key: {0}, Value: {1} in cityDict", kvp.Key, kvp.Value);
+            }
+
+            cityDict.Clear(); //removes all elements
+            Console.WriteLine("[after clear] cityDict.Count: {0}", cityDict.Count);
+
+            Console.WriteLine("=========================================");
+
+            // Console.WriteLine("*****************************************");
+            // Console.WriteLine("primeNumber Contains(3)? : {0}", primeNumbers.Contains(3));
+            // Console.WriteLine("primeNumber Contains(11)? : {0}", primeNumbers.Contains(11));
+            // Console.WriteLine("primeNumber IndexOf(11)? : {0}", primeNumbers.IndexOf(11));        
+            // Console.WriteLine("=========================================");
+
+            IeDelegate delegate1 = new SAccessPointImpl("", 1, "L4JSGS0061", "L4JSGS0061", "20", "psk2", "1600SGSJ4L");
+            IeDelegate delegate2 = new MAccessPointImpl("", 2, "L4JSGS0063", "L4JSGS0063", "40", "psk2", "3600SGSJ4L");
+            IeDelegate delegate3 = new SAccessPointImpl("", 3, "L4JSGS0065", "L4JSGS0065", "60", "psk2", "5600SGSJ4L");
+            IeDelegate delegate4 = new MAccessPointImpl("", 4, "L4JSGS0067", "L4JSGS0067", "80", "psk2", "7600SGSJ4L");
+
+//             IDictionary<string, IeDelegate> gAccessPointDict = new Dictionary<string, IeDelegate>();
+// openWith.Add("txt", "notepad.exe");
+//         openWith.Add("bmp", "paint.exe");
+//         openWith.Add("dib", "paint.exe");
+//         openWith.Add("rtf", "wordpad.exe");
+//         }
         }
     }
 }

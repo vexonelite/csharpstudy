@@ -1,5 +1,5 @@
 using System;
-//using ie.delegates;
+using ie.delegates;
 using ie.exceptions;
 
 
@@ -15,6 +15,29 @@ namespace ie.structures
          this.error = error;         
       }
    }
+
+   ///
+
+   public struct SDateDescriptionImpl: DateDescriptionDelegate {
+      public readonly DateTime dateTime;
+
+      public readonly string description;
+
+      public SDateDescriptionImpl(DateTime dateTime, string description) { 
+         this.dateTime = dateTime;
+         this.description = description;         
+      }
+
+      public DateTime theDate => this.dateTime;
+
+      public string theDescription => this.description;
+
+      public override string ToString() {
+         return "SDateDescriptionImpl {Description: " + theDescription + ", Date: " + theDate + "}";
+      }
+   }
+
+   ///
 
    public struct Books {
       private readonly string title;
@@ -41,6 +64,6 @@ namespace ie.structures
          Console.WriteLine("Subject : {0}", subject);
          Console.WriteLine("Book_id :{0}", bookId);
       }
-   };  
+   }
 }
 

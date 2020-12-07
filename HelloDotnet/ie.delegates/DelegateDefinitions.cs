@@ -20,6 +20,8 @@ namespace ie.delegates
         DateTime theDate { get; }    // read-only     //DateTime Struct
     }
 
+    public interface DateDescriptionDelegate : DateDelegate, DescriptionDelegate {}
+
     public interface AnyToIntDelegate {
         int toInteger();
     }

@@ -158,7 +158,12 @@ namespace RectangleApplication {
 
          //new TestDictionaryManipulations().run();
 
-         new TestListSorting().run();
+         //new TestListSorting().run();
+
+         //new TestNewAndOverrideModifier().run();
+
+         new TestOverflowException(true).run();
+         new TestOverflowException(false).run();
          
          while (true) {
             // Start computation.

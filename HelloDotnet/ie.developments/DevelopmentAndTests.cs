@@ -136,6 +136,96 @@ namespace ie.developments
         }
     }
 
+    /// show difference between override and new modifier associated with a function
+
+    public abstract class BaseLogger {
+        public virtual void foo(string msg) {
+            Console.WriteLine("Base - foo: {0}", msg);  
+        }
+
+        public void bar() {
+            Console.WriteLine("Base - bar");  
+        }
+    }
+
+    public class LoggerA: BaseLogger {
+
+        public override void foo(string msg) {
+            Console.WriteLine("LoggerB - foo: {0}", msg);  	
+        }
+        
+        public new void bar() {
+            Console.WriteLine("LoggerA - bar");  
+        }
+    }
+
+    public class LoggerB: BaseLogger {
+        public override void foo(string msg) {
+            Console.WriteLine("LoggerB - foo: {0}", msg);  	
+        }
+    }
+
+    public class TestNewAndOverrideModifier: IRunnable {        
+        
+        private int cents = 0;
+        private int dollars = 0;
+        private int extraCents = 0;
+
+        public void run() {        
+            BaseLogger AA = new LoggerA();
+            BaseLogger BB = new LoggerB();
+            AA.foo("Log started");
+            AA.foo("Log continuing");
+            AA.bar(); // involve BaseLogger's bar method
+            ((LoggerA)AA).bar(); // involve LoggerA's bar method
+        }
+
+        public void deposit(int dollars, int cents) {
+            int totalCents = cents + this.cents;
+            int extraDollars = totalCents / 100;
+            this.cents = totalCents - 100 * extraCents;
+
+            //C# ``integer`` operations don’t throw exceptions upon overflow by default
+            this.dollars += dollars + extraDollars; 
+
+            this.dollars += checked(dollars + extraDollars);
+
+
+        }
+    }
+
+    public class TestOverflowException: IRunnable { 
+
+        private readonly bool checkEnabled;
+
+        public TestOverflowException(bool checkEnabled) { this.checkEnabled = checkEnabled; }
+        public void run() {
+
+            int value = 780000000;
+            if (checkEnabled) {
+                Console.WriteLine("check Enabled!!");
+                checked {
+                    try {
+                        // Square the original value.
+                        int square = value * value;
+                        Console.WriteLine("{0} ^ 2 = {1}", value, square);
+                    }
+                    catch (OverflowException cause) {
+                        double square = Math.Pow(value, 2);
+                        Console.WriteLine("OverflowException: {0} > {1:E}, message: {2}", square, Int32.MaxValue, cause.Message);
+                    } 
+                }
+                // The example displays the following output:
+                //       Exception: 6.084E+17 > 2.147484E+009.
+            } else {
+                Console.WriteLine("check Disabled!!");
+                int square = value * value;
+                Console.WriteLine("{0} ^ 2 = {1}", value, square);
+            }
+            
+        }
+    }
+
     ///
 
     /** 

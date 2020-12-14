@@ -164,6 +164,12 @@ namespace RectangleApplication {
 
          new TestOverflowException(true).run();
          new TestOverflowException(false).run();
+
+         int sampleNumber = 5;  //assignment statement
+         Object sampleNumberObj = sampleNumber;  //boxing
+         sampleNumber = 10;
+         Console.WriteLine("Value of sampleNumber:  " + sampleNumber);
+         Console.WriteLine("Value of ob:  " + sampleNumberObj);
          
          while (true) {
             // Start computation.

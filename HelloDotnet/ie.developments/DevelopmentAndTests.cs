@@ -189,8 +189,6 @@ namespace ie.developments
             this.dollars += dollars + extraDollars; 
 
             this.dollars += checked(dollars + extraDollars);
-
-
         }
     }
 
@@ -223,6 +221,24 @@ namespace ie.developments
                 Console.WriteLine("{0} ^ 2 = {1}", value, square);
             }
             
+        }
+    }
+
+    ///
+
+    public class Employee {
+        protected string Name { get; set; }
+        protected string Identifier { get; private set; }
+    }
+
+    public class IeEmployee : Employee {
+        public void foo() {
+            string x = this.Name;
+            this.Name = "qoo";
+
+            string y = this.Identifier;
+            this.Identifier = "zoo";
+            Console.WriteLine("{0} ^ 2 = {1}", value, square);
         }
     }
 

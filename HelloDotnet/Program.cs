@@ -164,6 +164,12 @@ namespace RectangleApplication {
 
          new TestOverflowException(true).run();
          new TestOverflowException(false).run();
+
+         int sampleNumber = 5;  //assignment statement
+         Object sampleNumberObj = sampleNumber;  //boxing
+         sampleNumber = 10;
+         Console.WriteLine("Value of sampleNumber:  " + sampleNumber);
+         Console.WriteLine("Value of sampleNumberObj:  " + sampleNumberObj);
          
          while (true) {
             // Start computation.
@@ -306,7 +312,8 @@ namespace RectangleApplication {
          };
          Console.WriteLine("Test Func#3 - [getRandomNumber - Anonymous Method]: {0}", getRandomNumber1());
 
-         Func<int> getRandomNumber2 = () => new Random().Next(1, 100);
+         //Func<int> getRandomNumber2 = () => new Random().Next(1, 100);
+         Func<int> getRandomNumber2 = () => { return new Random().Next(1, 100); };      
          Console.WriteLine("Test Func#4 - [getRandomNumber - lambda expression]: {0}", getRandomNumber2());
 
          Console.WriteLine("[Func Delegate #2]==================================");

@@ -237,8 +237,7 @@ namespace ie.developments
             this.Name = "qoo";
 
             string y = this.Identifier;
-            this.Identifier = "zoo";
-            Console.WriteLine("{0} ^ 2 = {1}", value, square);
+            //this.Identifier = "zoo"; // cannot do this because the private set property            
         }
     }
 

@@ -335,15 +335,28 @@ namespace ie.developments
             // theGame.score = 55;
             // Console.WriteLine("TestGetterAndSetter1 - score3: {0}", theGame.score);
 
-            try {
-                ArrayList array1 = new ArrayList();
-                int var1 = 10;
-                int var2; 
-                array1.Add(var1);
-                var2 = array1[0];
-            }
-            catch(Exception cause) {
-                Console.WriteLine("Error on test: {0}", cause);
+            // try {
+            //     ArrayList array1 = new ArrayList();
+            //     int var1 = 10;
+            //     int var2; 
+            //     array1.Add(var1);
+            //     var2 = array1[0];
+            // }
+            // catch(Exception cause) {
+            //     Console.WriteLine("Error on test: {0}", cause);
+            // }
+
+            int[] numbers = { 9, 34, 65, 92, 87, 435, 3, 54,
+                    83, 23, 87, 435, 67, 12, 19 };
+            int first = numbers.First();
+            Console.WriteLine(first);
+            int second = numbers.First(number => number > 80);
+            Console.WriteLine(second);
+
+            //int third = numbers.First(5); // error
+            var page = numbers.Skip(5).Take(5);
+            foreach(var item in page) {
+                Console.WriteLine(item);
             }
         }
     }

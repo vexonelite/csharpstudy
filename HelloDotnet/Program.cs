@@ -170,6 +170,9 @@ namespace RectangleApplication {
          sampleNumber = 10;
          Console.WriteLine("Value of sampleNumber:  " + sampleNumber);
          Console.WriteLine("Value of sampleNumberObj:  " + sampleNumberObj);
+
+         new TestHashtable().run();
+         new TestSortedList().run();
          
          while (true) {
             // Start computation.
@@ -266,7 +269,8 @@ namespace RectangleApplication {
          del2("I can help2");
 
          // or set lambda expression 
-         MyDelegate del3 = (string msg) => Console.WriteLine(msg);
+         //MyDelegate del3 = (string msg) => Console.WriteLine(msg);
+         MyDelegate del3 = (string msg) => { Console.WriteLine(msg); };
          del3("I can help3");
 
          Console.WriteLine("[Multicast Delegate]==================================");

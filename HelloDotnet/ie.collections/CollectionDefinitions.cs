@@ -1,4 +1,5 @@
 using System;
+using System.Collections;           // need for Hashtable
 using System.Collections.Generic;   // need for IList<T>, List<T>, IDictionary<K, V> Dictionary<K, V>
 using System.ComponentModel;
 using System.Linq;
@@ -354,6 +355,78 @@ namespace ie.collections
 //         openWith.Add("dib", "paint.exe");
 //         openWith.Add("rtf", "wordpad.exe");
 //         }
+        }
+    }
+
+    public class TestHashtable : IRunnable {
+        public void run() {
+            Hashtable openWith = new Hashtable();
+            openWith.Add("EEE", "Eggplant");
+            openWith.Add("III", "illusion");
+            openWith.Add("AAA", "Alice");
+            openWith.Add("RRR", "Roll out");
+
+             // When you use foreach to enumerate hash table elements,
+            // the elements are retrieved as KeyValuePair objects.
+            Console.WriteLine();
+            foreach(DictionaryEntry de in openWith) {
+                Console.WriteLine("foreach DictionaryEntry - Key = {0}, Value = {1}", de.Key, de.Value);
+            }
+
+            // To get the values alone, use the Values property.
+            ICollection valueColl = openWith.Values;
+            // The elements of the ValueCollection are strongly typed
+            // with the type that was specified for hash table values.
+            Console.WriteLine();
+            foreach(string s in valueColl) {
+                Console.WriteLine("Foreach Value = {0}", s);
+            }
+
+            // To get the keys alone, use the Keys property.
+            ICollection keyColl = openWith.Keys;
+            // The elements of the KeyCollection are strongly typed
+            // with the type that was specified for hash table keys.
+            Console.WriteLine();
+            foreach(string s in keyColl) {
+                Console.WriteLine("Foreach Key = {0}", s);
+            }
+        }
+    }
+
+    public class TestSortedList : IRunnable {
+        public void run() {
+            // Create a new sorted list of strings, with string keys.
+            SortedList<string, string> openWith = new SortedList<string, string>();
+            openWith.Add("EEE", "Eggplant");
+            openWith.Add("III", "illusion");
+            openWith.Add("AAA", "Alice");
+            openWith.Add("RRR", "Roll out");
+
+            // When you use foreach to enumerate list elements,
+            // the elements are retrieved as KeyValuePair objects.
+            Console.WriteLine();
+            foreach(KeyValuePair<string, string> kvp in openWith) {
+                Console.WriteLine("foreach KeyValuePair - Key = {0}, Value = {1}", kvp.Key, kvp.Value);
+            }
+
+            // To get the values alone, use the Values property.
+            IList<string> ilistValues = openWith.Values;
+
+            // The elements of the list are strongly typed with the
+            // type that was specified for the SorteList values.
+            Console.WriteLine();
+            foreach(string s in ilistValues) {
+                Console.WriteLine("foreach Value = {0}", s);
+            }
+
+            // To get the keys alone, use the Keys property.
+            IList<string> ilistKeys = openWith.Keys;
+            // The elements of the list are strongly typed with the
+            // type that was specified for the SortedList keys.
+            Console.WriteLine();
+            foreach(string s in ilistKeys) {
+                Console.WriteLine("foreach Key = {0}", s);
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;           // need for ArrayList
 using System.Collections.Generic;   // need for List<T>
 using System.Diagnostics;           // need for Stopwatch
 using System.Threading;             // need for CancellationTokenSource
@@ -9,6 +10,7 @@ using System.Net.Http.Headers;
 using ie.delegates.reactives;
 using ie.errorcodes;
 using ie.exceptions;
+using ie.models;
 using ie.structures;
 
 
@@ -321,6 +323,30 @@ namespace ie.developments
         }
     }
 
+    ///
+
+    public class TestGetterAndSetter1: IRunnable {
+        public void run() {        
+            //Stack overflow Exception
+            // IeGameModel theGame = new IeGameModel();
+            // Console.WriteLine("TestGetterAndSetter1 - score1: {0}", theGame.score);
+            // theGame.score = -1;
+            // Console.WriteLine("TestGetterAndSetter1 - score2: {0}", theGame.score);
+            // theGame.score = 55;
+            // Console.WriteLine("TestGetterAndSetter1 - score3: {0}", theGame.score);
+
+            try {
+                ArrayList array1 = new ArrayList();
+                int var1 = 10;
+                int var2; 
+                array1.Add(var1);
+                var2 = array1[0];
+            }
+            catch(Exception cause) {
+                Console.WriteLine("Error on test: {0}", cause);
+            }
+        }
+    }
     ///
 
     public class TeskAsyncAwaitTask1 {

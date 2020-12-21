@@ -166,6 +166,11 @@ namespace RectangleApplication {
          new TestOverflowException(true).run();
          new TestOverflowException(false).run();
 
+         new TestHashtable().run();
+         new TestSortedList().run();
+
+         new TestGetterAndSetter1().run();
+
          // test string.Format
          //Console.WriteLine("outpout: " + string.Format("DateTime on {0:t} on {0:dd/mm/yy}", DateTime.Now, CultureInfo.CreateSpecificCulture("en-US")));
          Console.WriteLine("outpout: " + string.Format("Temperature at {0:N2} on {1:t} on {1:dd/mm/yy}", 105.629, DateTime.Now));
@@ -177,8 +182,7 @@ namespace RectangleApplication {
          Console.WriteLine("Value of sampleNumber:  " + sampleNumber);
          Console.WriteLine("Value of sampleNumberObj:  " + sampleNumberObj);
 
-         new TestHashtable().run();
-         new TestSortedList().run();
+         
          
          while (true) {
             // Start computation.

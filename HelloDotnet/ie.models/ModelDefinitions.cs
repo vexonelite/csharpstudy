@@ -24,4 +24,22 @@ namespace ie.models
          return "MDateDescriptionImpl {Description: " + theDescription + ", Date: " + theDate + "}";
       }
    }
+
+   public class IeGameModel {
+
+      public IeGameModel() { this.score = 0; }
+
+	   public int score { 
+		   get { return score; }
+		   set {
+			   if ( (value >= 0) && (value <= 100) ) {
+				   score = value;
+			   }
+			   else {
+               Console.WriteLine("value {0} is out of range < 0 or > 100!!", value);
+               score = 0;
+			   }
+		   } 
+	   }	
+   }
 }

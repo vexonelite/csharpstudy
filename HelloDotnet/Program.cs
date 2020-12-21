@@ -2,6 +2,7 @@
 using System.Net.Http;           // need for HttpClient
 using System.Threading;          // need for CancellationTokenSource
 using System.Threading.Tasks;    // need for Parallel.For() Method, Task
+using System.Globalization;      // need for CultureInfo
 
 using ie.collections;
 using ie.delegates;
@@ -165,6 +166,11 @@ namespace RectangleApplication {
          new TestOverflowException(true).run();
          new TestOverflowException(false).run();
 
+         // test string.Format
+         //Console.WriteLine("outpout: " + string.Format("DateTime on {0:t} on {0:dd/mm/yy}", DateTime.Now, CultureInfo.CreateSpecificCulture("en-US")));
+         Console.WriteLine("outpout: " + string.Format("Temperature at {0:N2} on {1:t} on {1:dd/mm/yy}", 105.629, DateTime.Now));
+         // Temperature at 105.63 on 下午 11:27 on 20/27/20
+
          int sampleNumber = 5;  //assignment statement
          Object sampleNumberObj = sampleNumber;  //boxing
          sampleNumber = 10;
@@ -269,8 +275,9 @@ namespace RectangleApplication {
          del2("I can help2");
 
          // or set lambda expression 
-         //MyDelegate del3 = (string msg) => Console.WriteLine(msg);
-         MyDelegate del3 = (string msg) => { Console.WriteLine(msg); };
+         //MyDelegate del3 = msg => Console.WriteLine(msg);
+         MyDelegate del3 = (string msg) => Console.WriteLine(msg);
+         //MyDelegate del3 = (string msg) => { Console.WriteLine(msg); };
          del3("I can help3");
 
          Console.WriteLine("[Multicast Delegate]==================================");
@@ -297,7 +304,8 @@ namespace RectangleApplication {
          Console.WriteLine("Test Predicate#2 - [anonymous method]: {0}", result2);
 
          // Predicate delegate with lambda expression
-         Predicate<string> isUpper3 = s => s.Equals(s.ToUpper());
+         //Predicate<string> isUpper3 = s => s.Equals(s.ToUpper());
+         Predicate<string> isUpper3 = (string s) => { return s.Equals(s.ToUpper()); };
          bool result3 = isUpper3("HELLO WORLD!!");
          Console.WriteLine("Test Predicate#3 - [lambda expression]: {0}", result3);
       }

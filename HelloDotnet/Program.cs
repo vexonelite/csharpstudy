@@ -166,10 +166,15 @@ namespace RectangleApplication {
          new TestOverflowException(true).run();
          new TestOverflowException(false).run();
 
-         new TestHashtable().run();
-         new TestSortedList().run();
+         //new TestHashtable().run();
+         //new TestSortedList().run();
 
-         new TestGetterAndSetter1().run();
+         //new TestGetterAndSetter1().run();
+         
+         //new TestLinqTask1().run();
+         //new TestLinqTask2().run();
+
+         new TestEventHandler1().run();
 
          // test string.Format
          //Console.WriteLine("outpout: " + string.Format("DateTime on {0:t} on {0:dd/mm/yy}", DateTime.Now, CultureInfo.CreateSpecificCulture("en-US")));

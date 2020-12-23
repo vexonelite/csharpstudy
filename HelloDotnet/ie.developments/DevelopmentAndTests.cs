@@ -326,39 +326,144 @@ namespace ie.developments
     ///
 
     public class TestGetterAndSetter1: IRunnable {
-        public void run() {        
-            //Stack overflow Exception
-            // IeGameModel theGame = new IeGameModel();
-            // Console.WriteLine("TestGetterAndSetter1 - score1: {0}", theGame.score);
-            // theGame.score = -1;
-            // Console.WriteLine("TestGetterAndSetter1 - score2: {0}", theGame.score);
-            // theGame.score = 55;
-            // Console.WriteLine("TestGetterAndSetter1 - score3: {0}", theGame.score);
+        public void run() {                    
+            try {
+                IeGameModel theGame = new IeGameModel();
+                Console.WriteLine("TestGetterAndSetter1 - score1: {0}", theGame.score);
+                theGame.score = -1;
+                Console.WriteLine("TestGetterAndSetter1 - score2: {0}", theGame.score);
+                theGame.score = 55;
+                Console.WriteLine("TestGetterAndSetter1 - score3: {0}", theGame.score);
+            } 
+            catch(Exception cause) {
+                Console.WriteLine("Error on test: {0}", cause);
+            }
+        }
+    }
 
-            // try {
-            //     ArrayList array1 = new ArrayList();
-            //     int var1 = 10;
-            //     int var2; 
-            //     array1.Add(var1);
-            //     var2 = array1[0];
-            // }
-            // catch(Exception cause) {
-            //     Console.WriteLine("Error on test: {0}", cause);
-            // }
+    public class TestCasting1: IRunnable {
+        public void run() {                
+            try {
+                ArrayList array1 = new ArrayList();
+                int var1 = 10;
+                int var2; 
+                array1.Add(var1);
 
+                // var2 = array1[0] is int; // compiler warning
+                // var2 = array1[0].Equals(typeof(int)); // compiler warning
+                // var2 = ((List<int>)array1) [0]; // compiler warning
+                // var2 = array1[0]; // Cannot implicitly convert type 'object' to 'int'. An explicit conversion exists (are you missing a cast?) 
+                var2 = (int) array1[0];
+            }
+            catch(Exception cause) {
+                Console.WriteLine("Error on test: {0}", cause);
+            }
+        }
+    }
+
+    public class TestLinqTask1: IRunnable {
+        public void run() {
+            Console.WriteLine("=== TestLinqTask1 ===");
             int[] numbers = { 9, 34, 65, 92, 87, 435, 3, 54,
                     83, 23, 87, 435, 67, 12, 19 };
             int first = numbers.First();
-            Console.WriteLine(first);
+            Console.WriteLine("First#1 - {0}", first);
             int second = numbers.First(number => number > 80);
-            Console.WriteLine(second);
+            Console.WriteLine("First#2 - {0}", second);
 
             //int third = numbers.First(5); // error
             var page = numbers.Skip(5).Take(5);
             foreach(var item in page) {
-                Console.WriteLine(item);
+                Console.WriteLine("Skip + Take: {0}", item);
             }
         }
+    }
+    public class TestLinqTask2: IRunnable {
+        public void run() {
+            Console.WriteLine("=== TestLinqTask2 ===");     
+            List<Int32> items = new List<int> { 100, 95, 80, 75, 95};
+
+            var result = from i in items
+                where i > 80
+                select i;
+            foreach(var item in result) {
+                Console.WriteLine("1 - {0}", item);
+            }
+
+            var result1 = items.Take(80);
+            foreach(var item in result1) {
+                Console.WriteLine("Take all: {0}", item);
+            }
+
+            int result2 = items.First(i => i > 80);
+            Console.WriteLine("First > 80: {0}", result2);
+
+            bool result3 = items.Any(i => i > 80);
+            Console.WriteLine("Any > 80: {0}", result3);
+        }
+    }
+    
+    ///
+
+    public class Alert {
+	    public event EventHandler<EventArgs> SendMessage;
+
+	    public void Exceute() {
+		    SendMessage(this, new EventArgs());
+	    }
+    }
+
+    public abstract class AbsSubscriber {
+    	protected readonly Alert alert = new Alert();
+
+        public abstract void Subscribe();
+		
+	    // public abstract void Subscribe() {
+		//     alert.SendMessage += (sender, e) => { Console.WriteLine("First"); };
+		//     alert.SendMessage += (sender, e) => { Console.WriteLine("Second"); };
+		//     alert.SendMessage += (sender, e) => { Console.WriteLine("Third"); };
+		//     alert.SendMessage += (sender, e) => { Console.WriteLine("Third");};
+	    // }
+	    public void Exceute() {
+		    alert.Exceute();
+	    }
+    }
+
+
+    public class Subscriber1 : AbsSubscriber {
+	    public override void Subscribe() {
+		    alert.SendMessage += (sender, e) => { Console.WriteLine("First"); };
+		    alert.SendMessage += (sender, e) => { Console.WriteLine("Second"); };
+		    alert.SendMessage += (sender, e) => { Console.WriteLine("Third"); };
+		    alert.SendMessage += (sender, e) => { Console.WriteLine("Third"); };
+	    }
+    }
+
+    public class Subscriber2 : AbsSubscriber {
+	    public override void Subscribe() {
+		    
+	    }
+    }
+
+    public class TestEventHandler1: IRunnable {
+        public void run() {
+            Console.WriteLine("TestEventHandler1 - Subscriber1");
+            Subscriber1 subscriber1 = new Subscriber1();
+		    subscriber1.Subscribe();
+		    subscriber1.Exceute();
+
+            Console.WriteLine("TestEventHandler1 - Subscriber2");
+            try {
+                Subscriber2 subscriber2 = new Subscriber2();
+		        subscriber2.Subscribe();
+		        subscriber2.Exceute();
+            } catch (Exception cause) {
+                // Exception thrown: 'System.NullReferenceException' in HelloDotnet.dll
+                // TestEventHandler1 - Subscriber2 - error: Object reference not set to an instance of an object.
+                Console.WriteLine("TestEventHandler1 - Subscriber2 - error: {0}", cause.Message);
+            }
+            
+        }	
     }
     ///
 
@@ -369,7 +474,6 @@ namespace ie.developments
             int t = await Task.Run(() => Allocate());
             Console.WriteLine("Compute: " + t);
         }
-
         static int Allocate(){
             Console.WriteLine("Allocate");
             // Compute total count of digits in strings.

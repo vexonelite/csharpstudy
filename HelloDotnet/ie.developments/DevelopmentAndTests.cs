@@ -343,17 +343,23 @@ namespace ie.developments
 
     public class TestCasting1: IRunnable {
         public void run() {                
+            Console.WriteLine("TestCasting1");
             try {
                 ArrayList array1 = new ArrayList();
                 int var1 = 10;
                 int var2; 
                 array1.Add(var1);
 
-                // var2 = array1[0] is int; // compiler warning
+                // var1 = array1[0] is int; // compiler warning
                 // var2 = array1[0].Equals(typeof(int)); // compiler warning
-                // var2 = ((List<int>)array1) [0]; // compiler warning
-                // var2 = array1[0]; // Cannot implicitly convert type 'object' to 'int'. An explicit conversion exists (are you missing a cast?) 
+                // var3 = ((List<int>)array1) [0]; // compiler warning
+                // var4 = array1[0]; // Cannot implicitly convert type 'object' to 'int'. An explicit conversion exists (are you missing a cast?)                 
                 var2 = (int) array1[0];
+
+                //var2 = array1[0].Equals(typeof(int)); // compiler warning
+                //var2 = ((List<int>) array1) [0]; // compiler warning
+                var2 = Convert.ToInt32(array1[0]);
+                //var2 = var2 = ((int[])array1)[0]; // compiler warning
             }
             catch(Exception cause) {
                 Console.WriteLine("Error on test: {0}", cause);
@@ -465,6 +471,25 @@ namespace ie.developments
             
         }	
     }
+
+    ///
+
+    public class TestStringFormat1: IRunnable {
+        public void run() {
+            Console.WriteLine("TestStringFormat1");
+            // test string.Format
+            //Console.WriteLine("outpout: " + string.Format("DateTime on {0:t} on {0:dd/mm/yy}", DateTime.Now, CultureInfo.CreateSpecificCulture("en-US")));
+            Console.WriteLine("outpout: " + string.Format("Temperature at {0:N2} on {1:t} on {1:dd/mm/yy}", 105.629, DateTime.Now));
+            // Temperature at 105.63 on 下午 11:27 on 20/27/20
+
+            int sampleNumber = 5;  //assignment statement
+            Object sampleNumberObj = sampleNumber;  //boxing
+            sampleNumber = 10;
+            Console.WriteLine("Value of sampleNumber:  " + sampleNumber);
+            Console.WriteLine("Value of sampleNumberObj:  " + sampleNumberObj);
+        }	
+    }
+    
     ///
 
     public class TeskAsyncAwaitTask1 {

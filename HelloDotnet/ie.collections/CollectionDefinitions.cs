@@ -202,6 +202,33 @@ namespace ie.collections
     
     ///
 
+    public class IDictionaryWrapper<Tkey, Tvalue> {
+        
+        private readonly IDictionary<Tkey, Tvalue> theDictionary = new Dictionary<Tkey, Tvalue>();
+            
+        // To enable client code to validate input // when accessing your indexer.
+        public int Count => theDictionary.Count;
+    
+        // Indexer declaration.        
+        public Tvalue this[Tkey theKey] {
+            get => theDictionary[theKey];
+            set => theDictionary[theKey] = value;
+        }
+    }
+
+    public class TestDictionaryWithIndexer1 : IRunnable {
+        public void run() {
+            Console.WriteLine("TestDictionaryWithIndexer1");
+            IDictionaryWrapper<string, int> wrapper = new IDictionaryWrapper<string, int>();
+            wrapper["One"] = 1; //adding a key/value using the Add() method
+            wrapper["Two"] = 2;
+            wrapper["Three"] = 3;
+            Console.WriteLine("One: {0}, Two: {1}, Three: {2}", wrapper["One"],  wrapper["Two"], wrapper["Three"]);
+        }
+    }
+
+    ///
+
     public class TestDictionaryManipulations : IRunnable {
         public void run() {
 
@@ -357,6 +384,22 @@ namespace ie.collections
 //         }
         }
     }
+
+    ///
+
+    public class Scorecard {
+	    private Dictionary<string, int> players = new Dictionary<string, int>();
+	    public void Add(string name, int score) {
+		    players.Add(name, score);
+	    }
+
+        public int this[string name] {
+	        get { return players[name];}
+        }
+	
+    }
+
+    ///
 
     public class TestHashtable : IRunnable {
         public void run() {

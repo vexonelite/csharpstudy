@@ -174,20 +174,13 @@ namespace RectangleApplication {
          //new TestLinqTask1().run();
          //new TestLinqTask2().run();
 
-         new TestEventHandler1().run();
+         //new TestEventHandler1().run();
 
-         // test string.Format
-         //Console.WriteLine("outpout: " + string.Format("DateTime on {0:t} on {0:dd/mm/yy}", DateTime.Now, CultureInfo.CreateSpecificCulture("en-US")));
-         Console.WriteLine("outpout: " + string.Format("Temperature at {0:N2} on {1:t} on {1:dd/mm/yy}", 105.629, DateTime.Now));
-         // Temperature at 105.63 on 下午 11:27 on 20/27/20
+         //new TestStringFormat1().run();
 
-         int sampleNumber = 5;  //assignment statement
-         Object sampleNumberObj = sampleNumber;  //boxing
-         sampleNumber = 10;
-         Console.WriteLine("Value of sampleNumber:  " + sampleNumber);
-         Console.WriteLine("Value of sampleNumberObj:  " + sampleNumberObj);
+         //new TestDictionaryWithIndexer1().run();
 
-         
+         new TestCasting1().run();
          
          while (true) {
             // Start computation.

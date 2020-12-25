@@ -487,6 +487,19 @@ namespace ie.developments
             sampleNumber = 10;
             Console.WriteLine("Value of sampleNumber:  " + sampleNumber);
             Console.WriteLine("Value of sampleNumberObj:  " + sampleNumberObj);
+
+            int numberOfCoins = 599;
+            Console.WriteLine("outpout2: " + string.Format("Player {0}, collected {1} coins.", "John", numberOfCoins.ToString("###0")));
+            Console.WriteLine("outpout2: " + string.Format("Player {0}, collected {1:000#} coins.", "John", numberOfCoins));
+            Console.WriteLine("outpout2: " + string.Format("Player {0}, collected {1:D3} coins.", "John", numberOfCoins));
+            numberOfCoins = 0;
+            Console.WriteLine("outpout2: " + string.Format("Player {0}, collected {1} coins.", "Mary", numberOfCoins.ToString("###0")));
+            Console.WriteLine("outpout2: " + string.Format("Player {0}, collected {1:000#} coins.", "Mary", numberOfCoins));
+            Console.WriteLine("outpout2: " + string.Format("Player {0}, collected {1:D3} coins.", "Mary", numberOfCoins));
+            numberOfCoins = 55;
+            Console.WriteLine("outpout2: " + string.Format("Player {0}, collected {1} coins.", "Alice", numberOfCoins.ToString("###0")));
+            Console.WriteLine("outpout2: " + string.Format("Player {0}, collected {1:000#} coins.", "Alice", numberOfCoins));
+            Console.WriteLine("outpout2: " + string.Format("Player {0}, collected {1:D3} coins.", "Alice", numberOfCoins));
         }	
     }
     

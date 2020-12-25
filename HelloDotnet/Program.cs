@@ -176,11 +176,11 @@ namespace RectangleApplication {
 
          //new TestEventHandler1().run();
 
-         //new TestStringFormat1().run();
+         new TestStringFormat1().run();
 
          //new TestDictionaryWithIndexer1().run();
 
-         new TestCasting1().run();
+         new TestCasting1().run();         
          
          while (true) {
             // Start computation.

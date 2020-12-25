@@ -42,4 +42,22 @@ namespace ie.models
 		   } 
 	   }	
    }
+
+   public class IeGameMode2 {
+
+      public IeGameModel2() { this.score = 0; }
+
+	   public int score { 
+		   get { return score; }
+		   set {
+			   if ( (value >= 0) && (value <= 100) ) {
+				   score = value;
+			   }
+			   else {
+               Console.WriteLine("value {0} is out of range < 0 or > 100!!", value);
+               score = 0;
+			   }
+		   } 
+	   }	
+   }
 }

@@ -328,7 +328,7 @@ namespace ie.developments
     public class TestGetterAndSetter1: IRunnable {
         public void run() {                    
             try {
-                IeGameModel theGame = new IeGameModel();
+                TestGameModel theGame = new TestGameModel();
                 Console.WriteLine("TestGetterAndSetter1 - score1: {0}", theGame.score);
                 theGame.score = -1;
                 Console.WriteLine("TestGetterAndSetter1 - score2: {0}", theGame.score);

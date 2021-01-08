@@ -163,24 +163,24 @@ namespace RectangleApplication {
 
          //new TestNewAndOverrideModifier().run();
 
-         new TestOverflowException(true).run();
-         new TestOverflowException(false).run();
+         //new TestOverflowException(true).run();
+         //new TestOverflowException(false).run();
 
          //new TestHashtable().run();
          //new TestSortedList().run();
 
-         //new TestGetterAndSetter1().run();
+         new TestGetterAndSetter1().run();
          
          //new TestLinqTask1().run();
          //new TestLinqTask2().run();
 
          //new TestEventHandler1().run();
 
-         new TestStringFormat1().run();
+         //new TestStringFormat1().run();
 
          //new TestDictionaryWithIndexer1().run();
 
-         new TestCasting1().run();         
+         //new TestCasting1().run();         
          
          while (true) {
             // Start computation.

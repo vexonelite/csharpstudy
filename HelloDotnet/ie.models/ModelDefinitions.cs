@@ -25,27 +25,21 @@ namespace ie.models
       }
    }
 
-   public class IeGameModel {
-
-      public IeGameModel() { this.score = 0; }
-
-	   public int score { 
-		   get { return score; }
-		   set {
-			   if ( (value >= 0) && (value <= 100) ) {
-				   score = value;
-			   }
-			   else {
-               Console.WriteLine("value {0} is out of range < 0 or > 100!!", value);
-               score = 0;
-			   }
-		   } 
-	   }	
+   /**
+    * [What Is Faster In C#: A Struct Or A Class?](https://medium.com/csharp-architects/whats-faster-in-c-a-struct-or-a-class-99e4761a7b76)
+    */
+   public class PointClass{
+      public int X { get; set; }
+      public int Y { get; set; }
+      public PointClass(int x, int y) {
+         this.X = x;
+         this.Y = y;
+      }
    }
 
-   public class IeGameMode2 {
+   public class TestGameModel {
 
-      public IeGameModel2() { this.score = 0; }
+      public TestGameModel() { this.score = 0; }
 
 	   public int score { 
 		   get { return score; }

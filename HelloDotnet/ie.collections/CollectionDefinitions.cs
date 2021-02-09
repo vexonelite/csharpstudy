@@ -376,8 +376,8 @@ namespace ie.collections
             IeDelegate delegate3 = new SAccessPointImpl("", 3, "L4JSGS0065", "L4JSGS0065", "60", "psk2", "5600SGSJ4L");
             IeDelegate delegate4 = new MAccessPointImpl("", 4, "L4JSGS0067", "L4JSGS0067", "80", "psk2", "7600SGSJ4L");
 
-//             IDictionary<string, IeDelegate> gAccessPointDict = new Dictionary<string, IeDelegate>();
-// openWith.Add("txt", "notepad.exe");
+//         IDictionary<string, IeDelegate> gAccessPointDict = new Dictionary<string, IeDelegate>();
+//         openWith.Add("txt", "notepad.exe");
 //         openWith.Add("bmp", "paint.exe");
 //         openWith.Add("dib", "paint.exe");
 //         openWith.Add("rtf", "wordpad.exe");

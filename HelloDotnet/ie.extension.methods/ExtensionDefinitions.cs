@@ -4,14 +4,19 @@ using System.Collections.Generic;
 
 namespace ie.extension.methods
 {    
+
+    public static class AnyObjectExtensions {
+        public static String getLogTag(this Object theObject) => theObject.GetType().Name;        
+    }
+
+    ///
+
     public static class IntExtensions {
 
         /** 
          * [Reference](https://www.tutorialsteacher.com/csharp/csharp-extension-method)
          */
-        public static bool IsGreaterThan(this int i, int value) {
-            return i > value;
-        }
+        public static bool IsGreaterThan(this int i, int value) => (i > value);        
     }
     
     public static class StringExtensions {

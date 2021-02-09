@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using ie.delegates;
 using ie.exceptions;
+using ie.extension.methods;
 
 
 namespace ie.models 
@@ -20,20 +21,24 @@ namespace ie.models
    ///
 
    public abstract class AbsCancellationTask {
-      private readonly CancellationTokenSource tokenSource;
+      protected readonly CancellationTokenSource tokenSource;
+
+      protected virtual int timeout { 
+            get { return 60000; }             
+        }
 
         protected AbsCancellationTask() { this.tokenSource = new CancellationTokenSource(); }
 
         public void cancelTask() {
             if (!tokenSource.IsCancellationRequested) {
                 tokenSource.Cancel();
-                Console.WriteLine("AbsAsyncAwaitTask - tokenSource.Cancel");
+                Console.WriteLine("{0} - tokenSource.Cancel", this.getLogTag());
             }
         }
 
         public void disposeTask() {
             tokenSource.Dispose();
-            Console.WriteLine("AbsAsyncAwaitTask - tokenSource.Dispose");
+            Console.WriteLine("{0} - tokenSource.Dispose", this.getLogTag());
         }
    }
 

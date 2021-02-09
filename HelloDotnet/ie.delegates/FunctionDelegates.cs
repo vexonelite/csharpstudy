@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks; // for Task usage
 using ie.exceptions;
 using ie.errorcodes;
+using ie.extension.methods;
 using ie.models;
 
 namespace ie.delegates.reactives 
@@ -48,13 +49,12 @@ namespace ie.delegates.reactives
                 return doConversion(input);
             }
             catch (Exception cause) {
-                Console.WriteLine("{0} - {1}", "IeBaseConverter", "Error on doConversion()");                
+                Console.WriteLine("{0} - {1}", this.getLogTag(), "Error on doConversion()", this.g);
                 if (cause is IeRuntimeException) {
                     throw ((IeRuntimeException) cause);
                 }
                 else {
-                    throw new IeRuntimeException(
-                        "IeBaseConverter - Error on doConversion()", cause, Base.INTERNAL_CONVERSION_ERROR);
+                    throw new IeRuntimeException(this.getLogTag() + " - Error on doConversion()", cause, Base.INTERNAL_CONVERSION_ERROR);
                 }
             }
         }
@@ -65,21 +65,74 @@ namespace ie.delegates.reactives
     ///
 
     public interface IeAsyncCallable {
-        Task run(); // note: no async here
+        Task runAsync(); // note: no async here
     }
 
     public interface IeAsyncCallable2<T> {
-        Task<T> run(); // note: no async here
+        Task<T> runAsync(); // note: no async here
     }
 
     public abstract class AbsAsyncAwaitTask : AbsCancellationTask, IeAsyncCallable {
+        
         protected AbsAsyncAwaitTask(): base() { }
-        public abstract Task run();
+
+        protected abstract Task runTaskAsync();
+        
+        /**
+         * [Cancel async tasks after a period of time (C#)](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/cancel-async-tasks-after-a-period-of-time)
+         */
+        public async Task runAsync() {
+            try {
+                Console.WriteLine("{0} - run", this.getLogTag());
+                tokenSource.CancelAfter(timeout);
+                await runTaskAsync().ConfigureAwait(false);
+            }
+            catch (Exception cause) {
+                if (cause is TaskCanceledException) {
+                    Console.WriteLine("{0} - Task has been cancelled!", this.getLogTag());
+                }
+                else if (cause is IeRuntimeException) {
+                    IeRuntimeException error = cause as IeRuntimeException;
+                    Console.WriteLine("{0} - IeRuntimeException errorCode: {1}, message: {2}", this.getLogTag(), error.exceptionCode, error.Message);
+                }
+                else { 
+                    Console.WriteLine("{0} - Unknown error {1}", this.getLogTag(), cause.Message); 
+                }
+            }
+            finally { 
+                disposeTask(); 
+            }
+        }
     }
 
     public abstract class AbsAsyncAwaitTask2<T> : AbsCancellationTask, IeAsyncCallable2<T> {
-        protected AbsAsyncAwaitTask2(): base() { }
-        public abstract Task<T> run();
+        protected AbsAsyncAwaitTask2() : base() { }
+
+        public abstract Task<T> runTaskAsync();
+
+        /**
+         * [Cancel async tasks after a period of time (C#)](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/cancel-async-tasks-after-a-period-of-time)
+         */
+        public async Task<T> runAsync() {
+            try {
+                Console.WriteLine("{0} - run", this.getLogTag());
+                tokenSource.CancelAfter(timeout);
+                return await runTaskAsync().ConfigureAwait(false);
+            }
+            catch (Exception cause) {
+                if (cause is IeRuntimeException) { throw cause; }
+                else if (cause is TaskCanceledException) {
+                    Console.WriteLine("{0} - Task has been cancelled!", this.getLogTag());
+                    throw new IeRuntimeException("Task has been cancelled!!", cause, Base.ASYNC_TASK_TIMEOUT); 
+                }
+                else { 
+                    throw new IeRuntimeException("Error on runAsync()", cause, "99999"); 
+                }
+            }
+            finally { 
+                disposeTask(); 
+            }
+        }
     }
 
     // public abstract class IeBaseAsyncCallable<T>: IeAsyncCallable<T> {

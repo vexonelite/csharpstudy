@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks; // for Task usage
 using ie.exceptions;
 using ie.errorcodes;
+using ie.models;
 
 namespace ie.delegates.reactives 
 {
@@ -71,11 +72,13 @@ namespace ie.delegates.reactives
         Task<T> run(); // note: no async here
     }
 
-    public abstract class AbsAsyncAwaitTask : IeAsyncCallable {
+    public abstract class AbsAsyncAwaitTask : AbsCancellationTask, IeAsyncCallable {
+        protected AbsAsyncAwaitTask(): base() { }
         public abstract Task run();
     }
 
-    public abstract class AbsAsyncAwaitTask2<T> : IeAsyncCallable2<T> {
+    public abstract class AbsAsyncAwaitTask2<T> : AbsCancellationTask, IeAsyncCallable2<T> {
+        protected AbsAsyncAwaitTask2(): base() { }
         public abstract Task<T> run();
     }
 

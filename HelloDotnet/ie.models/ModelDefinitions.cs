@@ -1,24 +1,46 @@
 using System;
-using System.Collections.Generic;   // need for IList<T>, List<T>, IDictionary<K, V> Dictionary<K, V>
+using System.Threading;
 using ie.delegates;
-using ie.delegates.reactives;
 using ie.exceptions;
 
 
 namespace ie.models 
 {
-      public struct IeApiResponse<T> {
-         public readonly T result;
+   public class IeApiResponse<T> {
+      public readonly T result;
 
-         public readonly IeRuntimeException error;
+      public readonly IeRuntimeException error;
 
-         public IeApiResponse(T result, IeRuntimeException error) { 
-            this.result = result;
-            this.error = error;         
-         }
+      public IeApiResponse(T result, IeRuntimeException error) { 
+         this.result = result;
+         this.error = error;         
+      }
    }
 
-    public class MDateDescriptionImpl: DateDescriptionDelegate {
+   ///
+
+   public abstract class AbsCancellationTask {
+      private readonly CancellationTokenSource tokenSource;
+
+        protected AbsCancellationTask() { this.tokenSource = new CancellationTokenSource(); }
+
+        public void cancelTask() {
+            if (!tokenSource.IsCancellationRequested) {
+                tokenSource.Cancel();
+                Console.WriteLine("AbsAsyncAwaitTask - tokenSource.Cancel");
+            }
+        }
+
+        public void disposeTask() {
+            tokenSource.Dispose();
+            Console.WriteLine("AbsAsyncAwaitTask - tokenSource.Dispose");
+        }
+   }
+
+   ///
+
+
+   public class MDateDescriptionImpl: DateDescriptionDelegate {
       public readonly DateTime dateTime;
 
       public readonly string description;

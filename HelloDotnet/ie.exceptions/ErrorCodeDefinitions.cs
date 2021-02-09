@@ -30,6 +30,7 @@ namespace ie.errorcodes
         public const string INTERNAL_CONVERSION_ERROR = "99944";
         public const string INTERNAL_FILTERING_ERROR = "99943";
         public const string INTERNAL_PROCESS_ERROR = "99942";
+        public const string ASYNC_TASK_TIMEOUT = "99941";
     }
     
     public class Ping {

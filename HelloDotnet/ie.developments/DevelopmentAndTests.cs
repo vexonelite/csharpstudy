@@ -529,8 +529,8 @@ namespace ie.developments
         }
     }
 
-    public class TeskAsyncAwaitTask2: IeAsyncCallable {
-        public async Task run() {
+    public class TeskAsyncAwaitTask2: AbsAsyncAwaitTask {
+        protected override async Task runTaskAsync() {
             // This method runs asynchronously.
             int t = await Task.Run(() => Allocate()).ConfigureAwait(false);
             Console.WriteLine("Compute: " + t);
@@ -657,26 +657,14 @@ namespace ie.developments
   
     ///
 
-    public class TeskAsyncAwaitTask5: IeAsyncCallable {
-
-        private readonly CancellationTokenSource tokenSource;
-
+    public class TeskAsyncAwaitTask5: AbsAsyncAwaitTask {
         private readonly Action<ie.structures.IeApiResponse<int?>> callback;
 
-        public TeskAsyncAwaitTask5(Action<ie.structures.IeApiResponse<int?>> callback) {
-            this.tokenSource = new CancellationTokenSource();
+        public TeskAsyncAwaitTask5(Action<ie.structures.IeApiResponse<int?>> callback): base() {        
             this.callback = callback;
         }
 
-        public void cancelTask() {
-            tokenSource.Cancel();
-        }
-
-        public void disposeTask() {
-            tokenSource.Dispose();
-        }
-        
-        public async Task run() {            
+        protected override async Task runTaskAsync() {            
             try {
                 if (Thread.CurrentThread.Name == null) {
                     Thread.CurrentThread.Name = "Thread Caller1";
@@ -793,7 +781,7 @@ namespace ie.developments
 
         public IeHttpGetTask(HttpClient httpClient): base(httpClient) { }
 
-        public sealed override async Task run() {
+        protected override async Task runTaskAsync() {
             try {                
                 HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, "https://api.github.com/users/vexonelite");
                 // Add our custom headers to avoid 403 forbidden!!

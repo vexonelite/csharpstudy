@@ -2,10 +2,22 @@ using System;
 using System.Collections.Generic;   // need for IList<T>, List<T>, IDictionary<K, V> Dictionary<K, V>
 using ie.delegates;
 using ie.delegates.reactives;
+using ie.exceptions;
 
 
 namespace ie.models 
 {
+      public struct IeApiResponse<T> {
+         public readonly T result;
+
+         public readonly IeRuntimeException error;
+
+         public IeApiResponse(T result, IeRuntimeException error) { 
+            this.result = result;
+            this.error = error;         
+         }
+   }
+
     public class MDateDescriptionImpl: DateDescriptionDelegate {
       public readonly DateTime dateTime;
 

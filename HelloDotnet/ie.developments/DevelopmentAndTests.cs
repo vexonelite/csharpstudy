@@ -800,6 +800,28 @@ namespace ie.developments
     }
 
     ///
+
+    /*
+    public class AaaGenericTest<List<T>> : ICallable<List<T>> {
+        private T item { get; set; }
+
+        public List<T> call()
+        {
+            List<T> list = new List<T>();
+            list.Add(item);
+            return list;
+        }
+    }
+    */
+
+    public class BbbGenericTest<T, R> : ICallable<T> where T : List<R> {
+        private readonly R item;
+        public T call() {
+            List<R> list = new List<R>();
+            list.Add(item);
+            return (T)list;
+        }    
+    }
 }
 
 

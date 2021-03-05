@@ -45,13 +45,13 @@ namespace ie.delegates.reactives
 
     public abstract class IeBaseConverter<T, R>: AbsMapFunction<T, R> {
         public sealed override R convertIntoData(T input) {        
-            try {
-                return doConversion(input);
+            try { 
+                return doConversion(input); 
             }
             catch (Exception cause) {
-                Console.WriteLine("{0} - {1}", this.getLogTag(), "Error on doConversion()", this.g);
-                if (cause is IeRuntimeException) {
-                    throw ((IeRuntimeException) cause);
+                Console.WriteLine("{0} - {1}", this.getLogTag(), "Error on doConversion()");                
+                if (cause is IeRuntimeException) { 
+                    throw ((IeRuntimeException) cause); 
                 }
                 else {
                     throw new IeRuntimeException(this.getLogTag() + " - Error on doConversion()", cause, Base.INTERNAL_CONVERSION_ERROR);
@@ -72,12 +72,18 @@ namespace ie.delegates.reactives
         Task<T> runAsync(); // note: no async here
     }
 
-    public abstract class AbsAsyncAwaitTask : AbsCancellationTask, IeAsyncCallable {
-        
-        protected AbsAsyncAwaitTask(): base() { }
+    public abstract class AbsAsyncAwaitTask<T> : AbsCancellationTask, IeAsyncCallable {
 
-        protected abstract Task runTaskAsync();
-        
+        private readonly Action<T> successCallback;
+        private readonly Action<IeRuntimeException> errorCallback;
+
+        protected AbsAsyncAwaitTask(Action<T> successCallback, Action<IeRuntimeException> errorCallback) : base() { 
+            this.successCallback = successCallback;
+            this.errorCallback = errorCallback;
+        }
+       
+        protected abstract Task<T> runTaskAsync();
+
         /**
          * [Cancel async tasks after a period of time (C#)](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/cancel-async-tasks-after-a-period-of-time)
          */
@@ -85,19 +91,24 @@ namespace ie.delegates.reactives
             try {
                 Console.WriteLine("{0} - run", this.getLogTag());
                 tokenSource.CancelAfter(timeout);
-                await runTaskAsync().ConfigureAwait(false);
+                T result = await runTaskAsync().ConfigureAwait(false);                
+                if (null != successCallback) { successCallback.Invoke(result); }
             }
             catch (Exception cause) {
+                IeRuntimeException error;
                 if (cause is TaskCanceledException) {
                     Console.WriteLine("{0} - Task has been cancelled!", this.getLogTag());
+                    error = new IeRuntimeException("Task has been cancelled!!", cause, Base.ASYNC_TASK_TIMEOUT);
                 }
                 else if (cause is IeRuntimeException) {
-                    IeRuntimeException error = cause as IeRuntimeException;
+                    error = cause as IeRuntimeException;
                     Console.WriteLine("{0} - IeRuntimeException errorCode: {1}, message: {2}", this.getLogTag(), error.exceptionCode, error.Message);
                 }
-                else { 
-                    Console.WriteLine("{0} - Unknown error {1}", this.getLogTag(), cause.Message); 
+                else {
+                    Console.WriteLine("{0} - Unknown error {1}", this.getLogTag(), cause.Message);
+                    error = new IeRuntimeException("Unknown Error on runAsync()", cause, "99999");
                 }
+                if (null != errorCallback) { errorCallback.Invoke(error); }
             }
             finally { 
                 disposeTask(); 
@@ -136,7 +147,7 @@ namespace ie.delegates.reactives
     }
 
     // public abstract class IeBaseAsyncCallable<T>: IeAsyncCallable<T> {
-        
+
     //     //R IMapFunction<T,R>.convertIntoData(T input) { // such statement will incur a building error
     //     public Task<T> call() {        
     //         try {
@@ -153,7 +164,8 @@ namespace ie.delegates.reactives
     //             }
     //         }
     //     }
-        
+
     //     protected abstract R doConversion(T input);
     // }
+
 }

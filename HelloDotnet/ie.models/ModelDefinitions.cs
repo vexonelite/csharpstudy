@@ -31,8 +31,14 @@ namespace ie.models
 
         public void cancelTask() {
             if (!tokenSource.IsCancellationRequested) {
-                tokenSource.Cancel();
-                Console.WriteLine("{0} - tokenSource.Cancel", this.getLogTag());
+                try
+                {
+                    tokenSource.Cancel();
+                    Console.WriteLine("{0} - tokenSource.Cancel", this.getLogTag());
+                }
+                catch (ObjectDisposedException cause) {
+                    Console.WriteLine("{0} - error on cancelTask(): {1}", this.getLogTag(), cause.Message);
+                }     
             }
         }
 

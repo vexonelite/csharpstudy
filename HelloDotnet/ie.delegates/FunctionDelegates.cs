@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks; // for Task usage
+using ie.commons;
 using ie.exceptions;
 using ie.errorcodes;
 using ie.extension.methods;
@@ -95,19 +96,19 @@ namespace ie.delegates.reactives
                 if (null != successCallback) { successCallback.Invoke(result); }
             }
             catch (Exception cause) {
-                IeRuntimeException error;
-                if (cause is TaskCanceledException) {
-                    Console.WriteLine("{0} - Task has been cancelled!", this.getLogTag());
-                    error = new IeRuntimeException("Task has been cancelled!!", cause, Base.ASYNC_TASK_TIMEOUT);
-                }
-                else if (cause is IeRuntimeException) {
-                    error = cause as IeRuntimeException;
-                    Console.WriteLine("{0} - IeRuntimeException errorCode: {1}, message: {2}", this.getLogTag(), error.exceptionCode, error.Message);
-                }
-                else {
-                    Console.WriteLine("{0} - Unknown error {1}", this.getLogTag(), cause.Message);
-                    error = new IeRuntimeException("Unknown Error on runAsync()", cause, "99999");
-                }
+                IeRuntimeException error = IeUtils.IeAppErrorHandler1(cause);
+                // if (cause is TaskCanceledException) {
+                //     Console.WriteLine("{0} - Task has been cancelled!", this.getLogTag());
+                //     error = new IeRuntimeException("Task has been cancelled!!", cause, Base.ASYNC_TASK_TIMEOUT);
+                // }
+                // else if (cause is IeRuntimeException) {
+                //     error = cause as IeRuntimeException;
+                //     Console.WriteLine("{0} - IeRuntimeException errorCode: {1}, message: {2}", this.getLogTag(), error.exceptionCode, error.Message);
+                // }
+                // else {
+                //     Console.WriteLine("{0} - Unknown error {1}", this.getLogTag(), cause.Message);
+                //     error = new IeRuntimeException("Unknown Error on runAsync()", cause, "99999");
+                // }
                 if (null != errorCallback) { errorCallback.Invoke(error); }
             }
             finally { 
@@ -131,14 +132,15 @@ namespace ie.delegates.reactives
                 return await runTaskAsync().ConfigureAwait(false);
             }
             catch (Exception cause) {
-                if (cause is IeRuntimeException) { throw cause; }
-                else if (cause is TaskCanceledException) {
-                    Console.WriteLine("{0} - Task has been cancelled!", this.getLogTag());
-                    throw new IeRuntimeException("Task has been cancelled!!", cause, Base.ASYNC_TASK_TIMEOUT); 
-                }
-                else { 
-                    throw new IeRuntimeException("Error on runAsync()", cause, "99999"); 
-                }
+                IeUtils.IeAppErrorHandler1(cause);
+                // if (cause is IeRuntimeException) { throw cause; }
+                // else if (cause is TaskCanceledException) {
+                //     Console.WriteLine("{0} - Task has been cancelled!", this.getLogTag());
+                //     throw new IeRuntimeException("Task has been cancelled!!", cause, Base.ASYNC_TASK_TIMEOUT); 
+                // }
+                // else { 
+                //     throw new IeRuntimeException("Error on runAsync()", cause, "99999"); 
+                // }
             }
             finally { 
                 disposeTask(); 
